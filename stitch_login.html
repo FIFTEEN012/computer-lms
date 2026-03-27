@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>KINETIC_TERMINAL // AUTH</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-tint": "#00dddd",
+              "secondary-container": "#fe00fe",
+              "on-secondary": "#5b005b",
+              "on-primary": "#003737",
+              "tertiary-fixed-dim": "#2ae500",
+              "error-container": "#93000a",
+              "secondary": "#ffabf3",
+              "on-surface": "#e5e2e1",
+              "tertiary-container": "#79ff5b",
+              "primary-fixed-dim": "#00dddd",
+              "on-secondary-container": "#500050",
+              "on-primary-fixed-variant": "#004f4f",
+              "on-surface-variant": "#b9cac9",
+              "tertiary-fixed": "#79ff5b",
+              "surface-container-highest": "#353534",
+              "primary": "#ffffff",
+              "on-primary-container": "#007070",
+              "on-background": "#e5e2e1",
+              "secondary-fixed": "#ffd7f5",
+              "secondary-fixed-dim": "#ffabf3",
+              "primary-container": "#00fbfb",
+              "surface-dim": "#131313",
+              "on-secondary-fixed": "#380038",
+              "on-secondary-fixed-variant": "#810081",
+              "surface-bright": "#3a3939",
+              "inverse-on-surface": "#313030",
+              "inverse-surface": "#e5e2e1",
+              "surface": "#131313",
+              "primary-fixed": "#00fbfb",
+              "outline-variant": "#3a4a49",
+              "on-tertiary-fixed": "#022100",
+              "tertiary": "#ffffff",
+              "outline": "#839493",
+              "surface-container-high": "#2a2a2a",
+              "inverse-primary": "#006a6a",
+              "surface-variant": "#353534",
+              "on-tertiary": "#053900",
+              "on-primary-fixed": "#002020",
+              "surface-container-low": "#1c1b1b",
+              "surface-container-lowest": "#0e0e0e",
+              "error": "#ffb4ab",
+              "on-error": "#690005",
+              "on-tertiary-fixed-variant": "#095300",
+              "background": "#131313",
+              "surface-container": "#201f1f",
+              "on-tertiary-container": "#117500",
+              "on-error-container": "#ffdad6"
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Inter"],
+              "label": ["Space Grotesk"],
+              "mono": ["JetBrains Mono"]
+            },
+            borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .grid-overlay {
+            background-size: 24px 24px;
+            background-image: linear-gradient(to right, rgba(58, 74, 73, 0.1) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(58, 74, 73, 0.1) 1px, transparent 1px);
+        }
+        .scanline-overlay {
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.03),
+                rgba(0, 0, 0, 0.03) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-surface-container-lowest text-on-surface font-body min-h-screen selection:bg-primary-fixed selection:text-on-primary-fixed relative overflow-hidden">
+<!-- Ambient Grid & Matrix Background -->
+<div class="fixed inset-0 grid-overlay z-0"></div>
+<div class="fixed inset-0 scanline-overlay z-10"></div>
+<!-- Hero Branding -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-8 h-20 bg-surface-dim/80 backdrop-blur-md">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-primary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-fixed text-2xl" style="font-variation-settings: 'FILL' 1;">terminal</span>
+</div>
+<h1 class="font-headline font-black text-2xl tracking-widest text-primary-fixed uppercase">KINETIC_TERMINAL</h1>
+</div>
+<div class="hidden md:flex items-center gap-6 font-mono text-[10px] tracking-widest text-outline uppercase">
+<span>System_Status: <span class="text-tertiary-fixed">Online</span></span>
+<span>Uptime: 99.99%</span>
+<span>v1.0.4-stable</span>
+</div>
+</header>
+<!-- Main Content Container -->
+<main class="relative z-20 min-h-screen flex items-center justify-center p-6">
+<!-- Decoration Left -->
+<div class="hidden lg:block absolute left-12 top-1/2 -translate-y-1/2 font-mono text-[10px] text-outline/30 space-y-4">
+<p>0x00A1 // INIT_SEQUENCE</p>
+<p>0x00A2 // HANDSHAKE_START</p>
+<p>0x00A3 // RSA_KEY_EXCHANGE</p>
+<p>0x00A4 // ENCRYPTION_LAYER_ACTIVE</p>
+<p>0x00A5 // WAITING_FOR_INPUT</p>
+</div>
+<!-- Login Card -->
+<div class="w-full max-w-md relative">
+<!-- Corner Brackets -->
+<div class="absolute -top-2 -left-2 w-6 h-6 border-t-2 border-l-2 border-primary-fixed"></div>
+<div class="absolute -top-2 -right-2 w-6 h-6 border-t-2 border-r-2 border-primary-fixed"></div>
+<div class="absolute -bottom-2 -left-2 w-6 h-6 border-b-2 border-l-2 border-primary-fixed"></div>
+<div class="absolute -bottom-2 -right-2 w-6 h-6 border-b-2 border-r-2 border-primary-fixed"></div>
+<div class="bg-surface-container-low shadow-[0_0_40px_rgba(0,251,251,0.05)] border border-outline-variant/20 p-8 md:p-12">
+<div class="mb-10">
+<h2 class="font-headline text-3xl font-bold tracking-tighter text-white mb-2 uppercase">
+                        ACCESS_GRANTED // <span class="text-primary-fixed">USER_AUTH</span>
+</h2>
+<p class="font-mono text-[11px] text-outline uppercase tracking-widest">Identify yourself to the central node</p>
+</div>
+<form class="space-y-8">
+<!-- Email/Username Field -->
+<div class="group">
+<label class="block font-headline text-[10px] font-bold uppercase tracking-[0.2em] text-outline group-focus-within:text-primary-fixed transition-colors mb-2">
+                            User_Identity
+                        </label>
+<div class="relative">
+<input class="w-full bg-surface-container-lowest border-0 border-b-2 border-outline-variant focus:border-primary-fixed focus:ring-0 text-primary-fixed placeholder:text-outline/30 font-mono text-sm uppercase transition-all duration-300 py-3 px-4" placeholder="ROOT@KINETIC.NET" type="text"/>
+<div class="absolute bottom-0 left-0 w-0 h-[2px] bg-primary-fixed group-focus-within:w-full transition-all duration-500 shadow-[0_0_10px_rgba(0,251,251,0.5)]"></div>
+</div>
+</div>
+<!-- Password Field -->
+<div class="group">
+<label class="block font-headline text-[10px] font-bold uppercase tracking-[0.2em] text-outline group-focus-within:text-secondary transition-colors mb-2">
+                            Security_Key
+                        </label>
+<div class="relative">
+<input class="w-full bg-surface-container-lowest border-0 border-b-2 border-outline-variant focus:border-secondary focus:ring-0 text-secondary placeholder:text-outline/30 font-mono text-sm transition-all duration-300 py-3 px-4" placeholder="••••••••••••" type="password"/>
+<div class="absolute bottom-0 left-0 w-0 h-[2px] bg-secondary group-focus-within:w-full transition-all duration-500 shadow-[0_0_10px_rgba(255,171,243,0.5)]"></div>
+</div>
+</div>
+<div class="flex items-center justify-between font-mono text-[10px] tracking-widest uppercase">
+<label class="flex items-center gap-2 cursor-pointer text-outline hover:text-white transition-colors">
+<input class="w-4 h-4 rounded-none bg-surface-container-lowest border-outline-variant text-primary-fixed focus:ring-primary-fixed focus:ring-offset-surface-dim" type="checkbox"/>
+<span>Remember_Me</span>
+</label>
+<a class="text-secondary hover:underline underline-offset-4" href="#">Reset_Token?</a>
+</div>
+<!-- Login Button -->
+<button class="group relative w-full h-14 bg-primary-fixed text-on-primary-fixed font-headline font-black text-sm tracking-[0.3em] uppercase transition-all duration-300 hover:shadow-[0_0_25px_rgba(0,251,251,0.4)] active:scale-95 overflow-hidden" type="submit">
+<span class="relative z-10 flex items-center justify-center gap-3">
+                            Initiate_Login
+                            <span class="material-symbols-outlined text-lg">login</span>
+</span>
+<!-- Glitch Hover Effect -->
+<div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+</button>
+</form>
+<!-- Social Authentication -->
+<div class="mt-12">
+<div class="flex items-center gap-4 mb-8">
+<div class="flex-1 h-[1px] bg-outline-variant/30"></div>
+<span class="font-mono text-[9px] text-outline/50 uppercase tracking-widest">Federated_Access</span>
+<div class="flex-1 h-[1px] bg-outline-variant/30"></div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<button class="flex items-center justify-center gap-3 py-3 border border-outline-variant/50 hover:border-primary-fixed hover:bg-primary-fixed/5 transition-all duration-300 group">
+<img alt="Google" class="w-4 h-4 filter grayscale group-hover:grayscale-0 transition-all" data-alt="Google logo in a minimalist grayscale vector style representing high-tech integration" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC84Kb7GVWUGpWYkG4iRdPJFoPe_as_kiJfhRrK00lSctW09-BP765qVoXdjsVPubPQrFinvWDaD6yb1NVf1xacw89UAoszsX-gh7fzvi1kpD9-wdslw-5d78ahWdaY--PcyxhYLyrNgy_tdRJ67Ooz1RUMnmJIml8jUNKTjWdRol8UR9EZsmDOTzWSGzxT-A1tLQNzy2FhjqVfDxGUZbYHSghvXQxdrXO0xZZVE6ymfGYk7PsiJVr2ePl0qM-hTAF-605CMcUX_xk"/>
+<span class="font-mono text-[10px] text-outline group-hover:text-primary-fixed tracking-widest uppercase">Google</span>
+</button>
+<button class="flex items-center justify-center gap-3 py-3 border border-outline-variant/50 hover:border-secondary hover:bg-secondary/5 transition-all duration-300 group">
+<img alt="GitHub" class="w-4 h-4 invert opacity-40 group-hover:opacity-100 transition-all" data-alt="GitHub octocat logo in a high-contrast white vector style on a dark background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiIkDhldNGJ4INTOCtZVHGijp_fL8wqRjfJz6PDBTi1w9D-9YWgCZkmOd6ZFp8xgc5Y9fLFKNZV-OQARYTS2arTwyrVMIywmaXUeWGpnALw5MfD7SZFXAWD4-CBNrIV5EM5AXBY__quwpLM9J4Oqn-vdscmpnSwSvHdNQjzoDE17bPDFp6vjeM5bHwJ7q7eEJhAxlMiQOYmW9zlrv28yRaCgx0gjouTusk8hX_CGMBRzXH47AHnYdo12m7tm0fCDJ0z-vFosmFfcM"/>
+<span class="font-mono text-[10px] text-outline group-hover:text-secondary tracking-widest uppercase">GitHub</span>
+</button>
+</div>
+</div>
+<div class="mt-10 text-center">
+<p class="font-mono text-[10px] text-outline/40 uppercase tracking-widest">
+                        New student? <a class="text-tertiary-fixed hover:underline underline-offset-4" href="#">Register_New_Node</a>
+</p>
+</div>
+</div>
+</div>
+<!-- Decoration Right -->
+<div class="hidden lg:flex absolute right-12 bottom-12 flex-col items-end font-mono text-[10px] text-outline/30 space-y-2 text-right">
+<p>// NODE_LOCATION: 37.7749° N, 122.4194° W</p>
+<p>// LATENCY: 24MS</p>
+<p>// PACKET_LOSS: 0.00%</p>
+<div class="w-48 h-1 bg-outline-variant/20 mt-4 overflow-hidden">
+<div class="h-full bg-primary-fixed w-2/3 animate-pulse shadow-[0_0_5px_#00fbfb]"></div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="fixed bottom-0 w-full py-6 px-12 z-50 flex flex-col md:flex-row justify-between items-center bg-surface-container-lowest/50 backdrop-blur-sm">
+<div class="font-mono text-[10px] text-outline/30 uppercase tracking-tighter mb-4 md:mb-0">
+            © 2024 KINETIC_TERMINAL // ALL_RIGHTS_RESERVED
+        </div>
+<div class="flex gap-8 font-mono text-[10px] text-outline/30 uppercase tracking-tighter">
+<a class="hover:text-secondary transition-colors" href="#">System Status</a>
+<a class="hover:text-secondary transition-colors" href="#">API</a>
+<a class="hover:text-secondary transition-colors" href="#">Privacy_Protocol</a>
+<a class="hover:text-secondary transition-colors" href="#">Terms_of_Service</a>
+</div>
+</footer>
+<!-- Full Page Ambient Element -->
+<div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary-fixed/5 rounded-full blur-[120px] pointer-events-none -z-10"></div>
+<div class="fixed top-0 right-0 w-[400px] h-[400px] bg-secondary/5 rounded-full blur-[100px] pointer-events-none -z-10"></div>
+</body></html>

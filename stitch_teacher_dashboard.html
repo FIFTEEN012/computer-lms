@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kinetic Terminal | Architect Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        @id tailwind-config
+        /* Tailwind configuration as per instructions */
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "outline-variant": "#3a4a49",
+                        "primary-fixed": "#00fbfb",
+                        "on-error-container": "#ffdad6",
+                        "inverse-surface": "#e5e2e1",
+                        "inverse-on-surface": "#313030",
+                        "primary-fixed-dim": "#00dddd",
+                        "tertiary-fixed": "#79ff5b",
+                        "secondary-fixed": "#ffd7f5",
+                        "surface": "#131313",
+                        "surface-tint": "#00dddd",
+                        "surface-container-lowest": "#0e0e0e",
+                        "on-primary-container": "#007070",
+                        "on-tertiary": "#053900",
+                        "primary-container": "#00fbfb",
+                        "on-secondary-fixed-variant": "#810081",
+                        "secondary-container": "#fe00fe",
+                        "on-primary": "#003737",
+                        "on-surface": "#e5e2e1",
+                        "tertiary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#095300",
+                        "surface-container": "#201f1f",
+                        "outline": "#839493",
+                        "tertiary-fixed-dim": "#2ae500",
+                        "secondary-fixed-dim": "#ffabf3",
+                        "on-secondary": "#5b005b",
+                        "on-error": "#690005",
+                        "error-container": "#93000a",
+                        "on-tertiary-container": "#117500",
+                        "secondary": "#ffabf3",
+                        "on-background": "#e5e2e1",
+                        "on-tertiary-fixed": "#022100",
+                        "primary": "#ffffff",
+                        "on-secondary-container": "#500050",
+                        "surface-variant": "#353534",
+                        "surface-container-highest": "#353534",
+                        "tertiary-container": "#79ff5b",
+                        "on-primary-fixed-variant": "#004f4f",
+                        "surface-container-low": "#1c1b1b",
+                        "on-primary-fixed": "#002020",
+                        "inverse-primary": "#006a6a",
+                        "surface-dim": "#131313",
+                        "background": "#131313",
+                        "surface-container-high": "#2a2a2a",
+                        "surface-bright": "#3a3939",
+                        "error": "#ffb4ab",
+                        "on-secondary-fixed": "#380038",
+                        "on-surface-variant": "#b9cac9"
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Space Grotesk"],
+                        "mono": ["JetBrains Mono"]
+                    },
+                    borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #131313;
+            background-image: radial-gradient(circle at 2px 2px, rgba(58, 74, 73, 0.05) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .scanline {
+            background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.03) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+        }
+        .glow-primary:hover {
+            box-shadow: 0 0 15px rgba(0, 251, 251, 0.4);
+        }
+    </style>
+</head>
+<body class="font-body text-on-surface overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- SIDE NAV BAR -->
+<aside class="fixed left-0 top-0 h-screen w-64 flex flex-col bg-[#131313] z-50">
+<div class="p-8">
+<h1 class="text-xl font-bold text-white tracking-tighter font-headline">Kinetic Terminal</h1>
+<p class="font-['Space_Grotesk'] uppercase tracking-wider text-[10px] text-gray-500 mt-1">Lead Architect</p>
+</div>
+<nav class="flex-1 px-0 py-4">
+<!-- Overview: Active State -->
+<a class="flex items-center px-8 py-4 space-x-4 text-[#00ffff] border-l-2 border-[#00ffff] bg-[#00ffff]/5 transition-colors duration-200 font-['Space_Grotesk'] uppercase tracking-wider text-xs" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Overview</span>
+</a>
+<a class="flex items-center px-8 py-4 space-x-4 text-gray-500 hover:text-white hover:bg-[#1c1b1b] transition-colors duration-200 font-['Space_Grotesk'] uppercase tracking-wider text-xs" href="#">
+<span class="material-symbols-outlined">account_tree</span>
+<span>Course Management</span>
+</a>
+<a class="flex items-center px-8 py-4 space-x-4 text-gray-500 hover:text-white hover:bg-[#1c1b1b] transition-colors duration-200 font-['Space_Grotesk'] uppercase tracking-wider text-xs" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span>Learner Analytics</span>
+</a>
+<a class="flex items-center px-8 py-4 space-x-4 text-gray-500 hover:text-white hover:bg-[#1c1b1b] transition-colors duration-200 font-['Space_Grotesk'] uppercase tracking-wider text-xs" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span>Assignments</span>
+</a>
+<a class="flex items-center px-8 py-4 space-x-4 text-gray-500 hover:text-white hover:bg-[#1c1b1b] transition-colors duration-200 font-['Space_Grotesk'] uppercase tracking-wider text-xs" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="p-8">
+<button class="w-full py-3 bg-primary-fixed text-on-primary-fixed font-headline font-bold text-xs uppercase tracking-widest glow-primary transition-all active:scale-95">
+                New Course
+            </button>
+</div>
+<div class="mt-auto px-8 pb-8 space-y-4">
+<a class="flex items-center space-x-4 text-gray-500 hover:text-white font-['Space_Grotesk'] uppercase tracking-wider text-xs" href="#">
+<span class="material-symbols-outlined text-sm">help</span>
+<span>Support</span>
+</a>
+<a class="flex items-center space-x-4 text-gray-500 hover:text-white font-['Space_Grotesk'] uppercase tracking-wider text-xs" href="#">
+<span class="material-symbols-outlined text-sm">logout</span>
+<span>Logout</span>
+</a>
+</div>
+</aside>
+<!-- TOP NAV BAR -->
+<header class="fixed top-0 right-0 left-64 h-16 flex justify-between items-center px-8 z-40 bg-[#0e0e0e]/80 backdrop-blur-md">
+<div class="flex items-center space-x-4">
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-gray-500 text-sm">search</span>
+<input class="bg-surface-container-low border-none focus:ring-1 focus:ring-primary-fixed text-xs font-mono w-64 pl-10 text-on-surface" placeholder="QUERY_SYSTEM..." type="text"/>
+</div>
+</div>
+<div class="flex items-center space-x-8">
+<div class="flex space-x-6 text-gray-400 font-['Space_Grotesk'] font-light text-sm">
+<span class="text-white font-black tracking-widest">LMS_TERMINAL_V1.0</span>
+</div>
+<div class="flex items-center space-x-4">
+<button class="text-[#00ffff] hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-[#00ffff] hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">terminal</span>
+</button>
+<div class="w-8 h-8 bg-surface-container-high border border-outline-variant relative">
+<img alt="User profile" class="w-full h-full object-cover grayscale" data-alt="High-contrast black and white portrait of a technical instructor in futuristic tactical gear, neon lighting accents" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9QZF6wR537yGymsuezO2gmLbGRmQv8Xa36rXaluqN6BwT4PRPiGh3Fm1N1yRaRQABDQOfcxaHjWRiXJ4glTm7cjJe_okDm18UR8EeCjVe7FQFLHxBDu51uWah5PuF4egyC9D-NpDWm76ImCNffG-5KaAP_A76IIPhCGQjAyqWJR5NpM4Z1P28OfjvVySvzPvVnbgrKtNSfVEM3ZioFuobA_GmMvWzIcuSBwsRykN6ZH730iVf7PkuhZPqc1rOHjCVtYWwtUS4pHI"/>
+</div>
+</div>
+</div>
+</header>
+<!-- MAIN CONTENT -->
+<main class="ml-64 mt-16 p-8 min-h-screen relative">
+<!-- Background Grid Decoration -->
+<div class="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
+<div class="font-mono text-[100px] leading-none select-none font-bold text-outline-variant">01</div>
+</div>
+<!-- Section 1: SYSTEM_METRICS -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+<!-- Metric 1 -->
+<div class="bg-surface-container-low p-6 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-2">
+<span class="material-symbols-outlined text-primary-fixed/20 text-4xl">groups</span>
+</div>
+<h3 class="font-headline text-[10px] uppercase tracking-[0.2em] text-gray-500 mb-2">TOTAL_LEARNERS</h3>
+<div class="flex items-baseline space-x-3">
+<span class="text-3xl font-headline font-bold text-white">1,240</span>
+<span class="text-[10px] font-mono text-tertiary-fixed">+5% GROWTH</span>
+</div>
+<div class="mt-4 h-[2px] w-full bg-outline-variant">
+<div class="h-full bg-primary-fixed w-3/4 shadow-[0_0_8px_rgba(0,251,251,0.5)]"></div>
+</div>
+</div>
+<!-- Metric 2 -->
+<div class="bg-surface-container-low p-6 relative overflow-hidden">
+<h3 class="font-headline text-[10px] uppercase tracking-[0.2em] text-gray-500 mb-2">ACTIVE_COURSES</h3>
+<div class="flex items-baseline space-x-3">
+<span class="text-3xl font-headline font-bold text-white">12</span>
+</div>
+<div class="mt-4 flex items-center space-x-2">
+<div class="w-2 h-2 bg-tertiary-fixed rounded-full animate-pulse shadow-[0_0_8px_rgba(121,255,91,0.5)]"></div>
+<span class="text-[10px] font-mono text-tertiary-fixed uppercase tracking-widest">OPERATIONAL</span>
+</div>
+</div>
+<!-- Metric 3 -->
+<div class="bg-surface-container-low p-6 relative overflow-hidden">
+<h3 class="font-headline text-[10px] uppercase tracking-[0.2em] text-gray-500 mb-2">AVG_COURSE_PROGRESS</h3>
+<div class="flex items-baseline space-x-3">
+<span class="text-3xl font-headline font-bold text-white">68%</span>
+</div>
+<div class="mt-4 flex flex-col space-y-1">
+<div class="flex justify-between text-[8px] font-mono text-gray-500">
+<span>LOCKED</span>
+<span>DEPLOYED</span>
+</div>
+<div class="h-[2px] w-full bg-outline-variant">
+<div class="h-full bg-secondary-fixed w-[68%] shadow-[0_0_8px_rgba(255,171,243,0.5)]"></div>
+</div>
+</div>
+</div>
+<!-- Metric 4 -->
+<div class="bg-surface-container-low p-6 relative overflow-hidden">
+<h3 class="font-headline text-[10px] uppercase tracking-[0.2em] text-gray-500 mb-2">REVENUE_STREAM</h3>
+<div class="flex items-baseline space-x-3">
+<span class="text-3xl font-headline font-bold text-white">42.5 ETH</span>
+</div>
+<div class="mt-4 flex items-center space-x-2">
+<span class="material-symbols-outlined text-primary-fixed text-xs animate-ping" style="font-variation-settings: 'FILL' 1;">sensors</span>
+<span class="text-[10px] font-mono text-primary-fixed uppercase tracking-widest">LIVE_FEED</span>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Section 2 & 3 (Main Area) -->
+<div class="lg:col-span-2 space-y-8">
+<!-- Section 3: ANALYTICS_WAVE -->
+<div class="bg-surface-container-low relative">
+<div class="p-6 border-b border-outline-variant flex justify-between items-center">
+<h2 class="font-headline font-bold text-sm tracking-widest uppercase flex items-center">
+<span class="w-2 h-4 bg-primary-fixed mr-3"></span>
+                            Learner Activity <span class="ml-2 text-gray-500 font-normal text-[10px] font-mono">/ LAST 30 CYCLES</span>
+</h2>
+<div class="flex space-x-2">
+<span class="w-3 h-3 bg-primary-fixed"></span>
+<span class="w-3 h-3 bg-secondary"></span>
+</div>
+</div>
+<div class="p-6 h-64 relative">
+<!-- Chart Mockup -->
+<div class="absolute inset-x-6 inset-y-8 flex items-end justify-between px-4">
+<!-- Simple visual bars for chart representation -->
+<div class="w-4 bg-primary-fixed/20 h-1/4"></div>
+<div class="w-4 bg-primary-fixed/20 h-2/4"></div>
+<div class="w-4 bg-primary-fixed/40 h-3/4"></div>
+<div class="w-4 bg-primary-fixed/30 h-2/5"></div>
+<div class="w-4 bg-primary-fixed/50 h-4/5"></div>
+<div class="w-4 bg-primary-fixed/20 h-1/3"></div>
+<div class="w-4 bg-primary-fixed/60 h-full shadow-[0_0_15px_rgba(0,251,251,0.2)]"></div>
+<div class="w-4 bg-primary-fixed/40 h-2/3"></div>
+<div class="w-4 bg-primary-fixed/30 h-1/2"></div>
+<div class="w-4 bg-primary-fixed/50 h-3/4"></div>
+<div class="w-4 bg-primary-fixed/20 h-1/4"></div>
+<div class="w-4 bg-primary-fixed/40 h-2/4"></div>
+</div>
+<!-- SVG for Wave line -->
+<svg class="absolute inset-0 w-full h-full p-6" preserveaspectratio="none" viewbox="0 0 800 200">
+<path class="drop-shadow-[0_0_5px_rgba(0,251,251,1)]" d="M0,150 Q100,100 200,130 T400,80 T600,110 T800,40" fill="none" stroke="#00fbfb" stroke-width="2"></path>
+<path d="M0,150 Q100,100 200,130 T400,80 T600,110 T800,40 V200 H0 Z" fill="url(#grad1)"></path>
+<defs>
+<lineargradient id="grad1" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:#00fbfb;stop-opacity:0.1"></stop>
+<stop offset="100%" style="stop-color:#00fbfb;stop-opacity:0"></stop>
+</lineargradient>
+</defs>
+</svg>
+<div class="absolute bottom-4 left-6 right-6 flex justify-between font-mono text-[8px] text-gray-600">
+<span>CYCLE_01</span>
+<span>CYCLE_15</span>
+<span>CYCLE_30</span>
+</div>
+</div>
+</div>
+<!-- Section 2: COURSE_INVENTORY -->
+<div class="bg-surface-container-low overflow-hidden">
+<div class="p-6 border-b border-outline-variant">
+<h2 class="font-headline font-bold text-sm tracking-widest uppercase flex items-center">
+<span class="w-2 h-4 bg-secondary mr-3"></span>
+                            Course Inventory
+                        </h2>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left font-mono text-xs">
+<thead>
+<tr class="text-gray-500 uppercase text-[10px] tracking-widest border-b border-outline-variant">
+<th class="px-6 py-4 font-normal">Course_Identity</th>
+<th class="px-6 py-4 font-normal">Node_Count</th>
+<th class="px-6 py-4 font-normal">Status</th>
+<th class="px-6 py-4 font-normal">Timestamp</th>
+<th class="px-6 py-4 font-normal text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30">
+<tr class="hover:bg-surface-container-high transition-colors group">
+<td class="px-6 py-4 text-white font-bold">NEURAL_SYNAPSE_ML</td>
+<td class="px-6 py-4 text-gray-400">452 LEARNERS</td>
+<td class="px-6 py-4">
+<span class="text-tertiary-fixed flex items-center">
+<span class="w-1.5 h-1.5 bg-tertiary-fixed mr-2"></span> ACTIVE
+                                        </span>
+</td>
+<td class="px-6 py-4 text-gray-500">2024.10.12_14:30</td>
+<td class="px-6 py-4 text-right space-x-3">
+<button class="text-primary-fixed hover:underline text-[10px] font-headline font-bold tracking-tighter">EDIT_NODE</button>
+<button class="text-gray-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-sm">visibility</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="px-6 py-4 text-white font-bold">PYTHON_OPS_v4</td>
+<td class="px-6 py-4 text-gray-400">312 LEARNERS</td>
+<td class="px-6 py-4">
+<span class="text-secondary flex items-center">
+<span class="w-1.5 h-1.5 bg-secondary mr-2 animate-pulse"></span> UPDATING
+                                        </span>
+</td>
+<td class="px-6 py-4 text-gray-500">2024.10.14_09:12</td>
+<td class="px-6 py-4 text-right space-x-3">
+<button class="text-primary-fixed hover:underline text-[10px] font-headline font-bold tracking-tighter">EDIT_NODE</button>
+<button class="text-gray-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-sm">visibility</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="px-6 py-4 text-white font-bold">BIO_HACKING_FUNDAMENTALS</td>
+<td class="px-6 py-4 text-gray-400">89 LEARNERS</td>
+<td class="px-6 py-4">
+<span class="text-gray-500 flex items-center">
+<span class="w-1.5 h-1.5 bg-gray-700 mr-2"></span> OFFLINE
+                                        </span>
+</td>
+<td class="px-6 py-4 text-gray-500">2024.09.28_23:05</td>
+<td class="px-6 py-4 text-right space-x-3">
+<button class="text-primary-fixed hover:underline text-[10px] font-headline font-bold tracking-tighter">EDIT_NODE</button>
+<button class="text-gray-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-sm">visibility</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Section 4: URGENT_PROTOCOLS (Sidebar) -->
+<div class="space-y-6">
+<div class="bg-surface-container-low border-l-4 border-error p-6 relative">
+<div class="flex items-center justify-between mb-6">
+<h2 class="font-headline font-bold text-sm tracking-widest uppercase">URGENT_PROTOCOLS</h2>
+<span class="material-symbols-outlined text-error animate-pulse">warning</span>
+</div>
+<div class="space-y-4">
+<!-- Alert 1 -->
+<div class="p-4 bg-surface-container-high border border-outline-variant/20 hover:border-error transition-colors cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="text-[10px] font-mono text-error font-bold tracking-tighter">UNGRADED_ASSIGNMENTS</span>
+<span class="bg-error text-on-error px-2 py-0.5 text-[10px] font-bold">15</span>
+</div>
+<p class="text-[10px] text-gray-400 font-mono">Action required for 'NEURAL_SYNAPSE_ML' module.</p>
+</div>
+<!-- Alert 2 -->
+<div class="p-4 bg-surface-container-high border border-outline-variant/20 hover:border-primary-fixed transition-colors cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="text-[10px] font-mono text-primary-fixed font-bold tracking-tighter">SYSTEM_UPDATE_PENDING</span>
+<span class="material-symbols-outlined text-primary-fixed text-sm">update</span>
+</div>
+<p class="text-[10px] text-gray-400 font-mono">V2.4 Architecture rollout scheduled for 04:00 GMT.</p>
+</div>
+<!-- Alert 3 -->
+<div class="p-4 bg-surface-container-high border border-outline-variant/20 hover:border-tertiary-fixed transition-colors cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="text-[10px] font-mono text-tertiary-fixed font-bold tracking-tighter">NEW_QUERY_RECEIVED</span>
+<span class="material-symbols-outlined text-tertiary-fixed text-sm">chat_bubble</span>
+</div>
+<p class="text-[10px] text-gray-400 font-mono">3 learners awaiting terminal clearance assistance.</p>
+</div>
+</div>
+<button class="mt-8 w-full py-2 border border-outline text-[10px] font-headline uppercase tracking-widest hover:bg-outline hover:text-surface transition-colors">
+                        Clear_All_Logs
+                    </button>
+</div>
+<!-- Terminal Overlay Detail -->
+<div class="bg-[#0e0e0e] p-6 font-mono text-[10px] text-primary-fixed/60 relative group">
+<div class="scanline absolute inset-0"></div>
+<div class="space-y-1">
+<p>&gt; BOOT_SEQUENCE: COMPLETED</p>
+<p>&gt; CACHE_SYNC: 98%</p>
+<p>&gt; ARCHITECT_ID: #FF-0012</p>
+<p>&gt; STATUS: MONITORING_ACTIVE</p>
+<div class="pt-4 flex items-center">
+<span class="w-2 h-4 bg-primary-fixed animate-pulse mr-2"></span>
+<span class="text-primary-fixed">WAITING_FOR_INPUT...</span>
+</div>
+</div>
+</div>
+<!-- Visual Asset / Card -->
+<div class="bg-surface-container-high aspect-square relative overflow-hidden">
+<img alt="Core system visualization" class="w-full h-full object-cover opacity-50 grayscale hover:grayscale-0 transition-all duration-700" data-alt="Abstract 3D technical blueprint of a neural network core, glowing cyan circuits, floating digital particles, dark obsidian background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBalwVJmONvrlotsxM27rdYDfyiTPv3PQ5wck2GIrSC4TDdQQA3J30bbwVpK9ZB8dCUMDpcmG6J1OmRPSMIeXAdGdDtVr_Uem5xsyJ_khIN5kEUzm7tyvy2JKQd9494kFZa49-t5ZoU8vpS0Z6FKkxUA8g-bxBFfQE8Q-mBT26YkW-lvEhX--A9I2gje847zktEXKmI-Cde3NJOLZsRRK9wJuSeBrRQUCtbuzg-4SywPCPBparqFdaiAjM6twfBlfdI8fEMNgcGwJw"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface to-transparent"></div>
+<div class="absolute bottom-4 left-4">
+<span class="text-white font-headline text-xs font-bold tracking-[0.3em]">SYSTEM_CORE_v9</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- UI ACCENT: Corner Brackets (Global) -->
+<div class="fixed top-0 left-0 w-2 h-2 border-t border-l border-primary-fixed pointer-events-none z-[60]"></div>
+<div class="fixed top-0 right-0 w-2 h-2 border-t border-r border-primary-fixed pointer-events-none z-[60]"></div>
+<div class="fixed bottom-0 left-0 w-2 h-2 border-b border-l border-primary-fixed pointer-events-none z-[60]"></div>
+<div class="fixed bottom-0 right-0 w-2 h-2 border-b border-r border-primary-fixed pointer-events-none z-[60]"></div>
+</body></html>
