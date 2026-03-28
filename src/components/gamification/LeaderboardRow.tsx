@@ -28,66 +28,74 @@ export default function LeaderboardRow({
 
   return (
     <div
-      className={`flex items-center gap-4 p-4 border transition-all relative overflow-hidden group ${
+      className={`flex items-center gap-6 p-5 border transition-all duration-500 relative overflow-hidden group italic font-heading ${
         isCurrentUser
-          ? 'bg-blue-500/10 border-blue-500/50 shadow-[0_0_20px_rgba(59,130,246,0.1)]'
-          : 'bg-[#0e0e0e] border-slate-800 hover:border-slate-600'
+          ? 'bg-primary/10 border-primary shadow-glow-cyan scale-[1.02] z-10'
+          : 'bg-black/40 border-white/5 hover:border-white/20'
       }`}
     >
+      <div className="absolute inset-0 scanlines opacity-[0.03] pointer-events-none z-0"></div>
+      
       {/* Current user indicator */}
       {isCurrentUser && (
-        <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-400" />
+        <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-primary shadow-glow-cyan animate-pulse" />
       )}
 
       {/* Rank */}
-      <div className={`w-12 text-center font-mono font-black text-2xl italic tracking-tighter ${rankColors[rank] || 'text-slate-700'}`}>
-        #{rank}
+      <div className={`w-14 text-center font-black text-3xl italic tracking-tighter ${rankColors[rank] || 'text-slate-800'} ${rank <= 3 ? 'drop-shadow-glow-cyan' : ''}`}>
+        #{rank > 9 ? rank : '0' + rank}
       </div>
 
       {/* Avatar */}
-      <div className="relative">
+      <div className="relative z-10">
         {avatarUrl ? (
           <img
             src={avatarUrl}
             alt={name}
-            className={`w-12 h-12 rounded-full border-2 object-cover ${isCurrentUser ? 'border-blue-400' : borderColor}`}
+            className={`w-14 h-14 rounded-none border-2 object-cover transition-transform duration-700 group-hover:scale-110 ${isCurrentUser ? 'border-primary shadow-glow-cyan' : borderColor}`}
           />
         ) : (
-          <div className={`w-12 h-12 rounded-full border-2 bg-slate-900 flex items-center justify-center ${isCurrentUser ? 'border-blue-400' : borderColor}`}>
-            <Terminal className="text-slate-600 w-5 h-5" />
+          <div className={`w-14 h-14 rounded-none border-2 bg-black/60 flex items-center justify-center transition-transform duration-700 group-hover:scale-110 ${isCurrentUser ? 'border-primary shadow-glow-cyan' : borderColor}`}>
+            <Terminal className="text-slate-600 w-6 h-6" />
           </div>
         )}
         {/* Level emoji badge */}
-        <div className="absolute -bottom-1 -right-1 text-sm bg-[#0e0e0e] border border-slate-800 w-6 h-6 flex items-center justify-center text-[10px]">
+        <div className="absolute -bottom-2 -right-2 text-base bg-black border border-white/10 w-8 h-8 flex items-center justify-center shadow-lg transform rotate-12">
           {level.emoji}
         </div>
       </div>
 
       {/* Info */}
-      <div className="flex-1 min-w-0">
-        <div className={`font-sans font-bold text-sm md:text-base uppercase tracking-tight flex items-center gap-2 truncate ${isCurrentUser ? 'text-blue-400' : 'text-white'}`}>
+      <div className="flex-1 min-w-0 relative z-10">
+        <div className={`text-base md:text-xl font-black uppercase tracking-widest flex items-center gap-3 truncate ${isCurrentUser ? 'text-primary text-shadow-neon-cyan' : 'text-white'}`}>
           {name}
           {isCurrentUser && (
-            <span className="font-mono text-[8px] bg-blue-500/20 px-2 py-0.5 border border-blue-500/30 shrink-0">YOU</span>
+            <span className="text-[9px] bg-primary text-black px-3 py-0.5 font-black shrink-0 shadow-glow-cyan -rotate-3">YOU_OWNER</span>
           )}
         </div>
-        <div className="font-mono text-[10px] text-slate-500 uppercase tracking-widest flex items-center gap-2">
-          <span className={colorClass}>LV{level.level} {level.name}</span>
+        <div className="text-[10px] text-slate-600 font-black uppercase tracking-[0.2em] flex items-center gap-3 mt-1 not-italic">
+          <span className={`${colorClass} flex items-center gap-1.5`}>
+            <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
+            LV_0{level.level} {level.name}
+          </span>
           {badgeCount > 0 && (
-            <span className="text-yellow-500/60">🏅 ×{badgeCount}</span>
+            <span className="text-yellow-500/80 flex items-center gap-1.5 border-l border-white/10 pl-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse shadow-glow-yellow" />
+              BADGES_{badgeCount}
+            </span>
           )}
         </div>
       </div>
 
       {/* XP */}
-      <div className="text-right shrink-0">
-        <div className="flex items-center gap-1.5 justify-end">
-          <Zap className="w-4 h-4 text-yellow-500" />
-          <span className="font-sans font-black text-xl md:text-2xl text-white tracking-widest leading-none">
+      <div className="text-right shrink-0 relative z-10">
+        <div className="flex items-center gap-2 justify-end">
+          <Zap className="w-5 h-5 text-yellow-500 shadow-glow-yellow animate-bounce" />
+          <span className="text-2xl md:text-4xl font-black text-white tracking-tighter leading-none text-shadow-neon-cyan italic">
             {xp.toLocaleString()}
           </span>
         </div>
-        <div className="font-mono text-[9px] text-slate-600 uppercase tracking-widest">XP</div>
+        <div className="text-[10px] text-slate-800 font-black uppercase tracking-[0.3em] mt-1">XP_FLOW</div>
       </div>
     </div>
   )

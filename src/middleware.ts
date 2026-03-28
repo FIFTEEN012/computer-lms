@@ -29,7 +29,15 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
+
+  if (authError) {
+    console.error('[Middleware] User fetch error:', authError.message)
+    // If it's a connection error (fetch failed), it could be Supabase is unreachable
+    if (authError.message.includes('fetch')) {
+      console.error('[Middleware] CRITICAL: Supabase unreachable from server.')
+    }
+  }
 
   const { pathname } = request.nextUrl
 

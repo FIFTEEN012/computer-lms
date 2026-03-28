@@ -3,18 +3,58 @@
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import ImageExtension from '@tiptap/extension-image'
+import { CodePlaygroundNode } from '@/lib/tiptap-code-playground'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { updateLessonContentAction } from '@/app/actions/lessons'
 import { useToast } from '@/hooks/useToast'
-import { Save, Loader2, Bold, Italic, Heading1, Heading2, Heading3, List, Code, Image as ImageIcon, Eye, EyeOff, Terminal } from 'lucide-react'
+import { Save, Loader2, Bold, Italic, Heading1, Heading2, Heading3, List, Code, Image as ImageIcon, Eye, EyeOff, Terminal, Play } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/client'
 import { sanitizeHTML, validateFile, ALLOWED_IMAGE_TYPES, MAX_IMAGE_SIZE } from '@/lib/sanitize'
+import { SUPPORTED_LANGUAGES, type SupportedLanguageId } from '@/lib/piston'
 
 // Calculates reading time dynamically given standard WPM rates
 function calcReadingTime(text: string) {
   const words = text.trim().split(/\s+/).length
   return Math.ceil(words / 200)
+}
+
+function CodePlaygroundDialog({ open, onClose, onInsert }: { open: boolean, onClose: () => void, onInsert: (lang: SupportedLanguageId, code: string, instructions: string) => void }) {
+  const [lang, setLang] = useState<SupportedLanguageId>('python')
+  const [code, setCode] = useState('print("Hello, World!")')
+  const [instructions, setInstructions] = useState('')
+
+  if (!open) return null
+
+  return (
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[200] flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-surface-container-low border border-outline-variant/30 w-full max-w-lg p-6 space-y-5" onClick={e => e.stopPropagation()}>
+        <h3 className="font-headline font-black text-sm uppercase tracking-widest text-on-surface">INSERT_CODE_PLAYGROUND</h3>
+
+        <div>
+          <label className="block font-headline text-[10px] uppercase tracking-widest text-outline mb-2">LANGUAGE</label>
+          <select value={lang} onChange={e => setLang(e.target.value as SupportedLanguageId)} className="w-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface font-mono text-sm px-3 py-2 focus:ring-1 focus:ring-primary-fixed">
+            {SUPPORTED_LANGUAGES.map(l => <option key={l.id} value={l.id} className="bg-surface-container-low">{l.label}</option>)}
+          </select>
+        </div>
+
+        <div>
+          <label className="block font-headline text-[10px] uppercase tracking-widest text-outline mb-2">INSTRUCTIONS (optional)</label>
+          <input type="text" value={instructions} onChange={e => setInstructions(e.target.value)} placeholder="เขียนคำสั่งให้นักเรียน..." className="w-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface font-mono text-sm px-3 py-2 focus:ring-1 focus:ring-primary-fixed placeholder:text-outline/30" />
+        </div>
+
+        <div>
+          <label className="block font-headline text-[10px] uppercase tracking-widest text-outline mb-2">STARTER_CODE</label>
+          <textarea value={code} onChange={e => setCode(e.target.value)} rows={8} className="w-full bg-surface-container-lowest border border-outline-variant/30 text-primary-fixed font-mono text-sm px-3 py-2 focus:ring-1 focus:ring-primary-fixed resize-y" />
+        </div>
+
+        <div className="flex justify-end gap-3 pt-2">
+          <button onClick={onClose} className="px-5 py-2 border border-outline-variant/30 text-on-surface-variant font-headline text-[10px] font-bold uppercase tracking-widest hover:bg-surface-container-high transition-all">CANCEL</button>
+          <button onClick={() => { onInsert(lang, code, instructions); onClose() }} className="px-5 py-2 bg-primary-fixed text-on-primary-fixed font-headline text-[10px] font-black uppercase tracking-widest hover:shadow-[0_0_15px_rgba(0,251,251,0.4)] transition-all">INSERT</button>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 function MenuBar({ editor }: { editor: any }) {
@@ -23,7 +63,9 @@ function MenuBar({ editor }: { editor: any }) {
   const supabase = createClient()
   const { toast } = useToast()
   const [uploading, setUploading] = useState(false)
+  const [showCodeDialog, setShowCodeDialog] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const savedSelectionRef = useRef<any>(null)
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -51,25 +93,54 @@ function MenuBar({ editor }: { editor: any }) {
   }
 
   const toggleBtnClass = (active: boolean) => 
-     `h-8 w-8 p-1 rounded-none border transition-colors ${active ? 'bg-cyan-500 border-cyan-400 text-black shadow-[0_0_10px_rgba(34,211,238,0.3)]' : 'bg-[#1c1b1b] border-slate-800 text-slate-400 hover:text-cyan-400 hover:border-cyan-400'}`
+     `h-10 w-10 p-2 rounded-none border transition-all duration-300 ${active ? 'bg-primary border-primary text-black shadow-glow-cyan rotate-3' : 'bg-black/40 border-white/5 text-slate-500 hover:text-primary hover:border-primary/50'}`
 
   return (
-    <div className="flex flex-wrap items-center gap-2 p-2 bg-[#0e0e0e] border border-slate-800 sticky top-16 z-20 shadow-md">
+    <div className="flex flex-wrap items-center gap-3 p-4 bg-black/60 border border-white/5 sticky top-32 z-20 shadow-2xl backdrop-blur-xl mb-1 italic">
+      <div className="absolute inset-0 scanlines opacity-[0.03] pointer-events-none z-0"></div>
       <button type="button" onClick={() => editor.chain().focus().toggleBold().run()} className={toggleBtnClass(editor.isActive('bold'))}><Bold className="w-5 h-5 mx-auto" /></button>
       <button type="button" onClick={() => editor.chain().focus().toggleItalic().run()} className={toggleBtnClass(editor.isActive('italic'))}><Italic className="w-5 h-5 mx-auto" /></button>
-      <div className="w-px h-6 bg-slate-800 mx-2"></div>
+      <div className="w-px h-8 bg-white/5 mx-3"></div>
       <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} className={toggleBtnClass(editor.isActive('heading', { level: 1 }))}><Heading1 className="w-5 h-5 mx-auto" /></button>
       <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} className={toggleBtnClass(editor.isActive('heading', { level: 2 }))}><Heading2 className="w-5 h-5 mx-auto" /></button>
       <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} className={toggleBtnClass(editor.isActive('heading', { level: 3 }))}><Heading3 className="w-5 h-5 mx-auto" /></button>
-      <div className="w-px h-6 bg-slate-800 mx-2"></div>
+      <div className="w-px h-8 bg-white/5 mx-3"></div>
       <button type="button" onClick={() => editor.chain().focus().toggleBulletList().run()} className={toggleBtnClass(editor.isActive('bulletList'))}><List className="w-5 h-5 mx-auto" /></button>
       <button type="button" onClick={() => editor.chain().focus().toggleCodeBlock().run()} className={toggleBtnClass(editor.isActive('codeBlock'))}><Code className="w-5 h-5 mx-auto" /></button>
-      <div className="w-px h-6 bg-slate-800 mx-2"></div>
+      <div className="w-px h-8 bg-white/5 mx-3"></div>
       
       <button type="button" onClick={() => fileInputRef.current?.click()} className={toggleBtnClass(false)}>
         {uploading ? <Loader2 className="w-5 h-5 mx-auto animate-spin" /> : <ImageIcon className="w-5 h-5 mx-auto" />}
       </button>
       <input type="file" ref={fileInputRef} onChange={handleImageUpload} accept="image/*" className="hidden" />
+
+      <button type="button" onClick={() => { savedSelectionRef.current = editor.state.selection; setShowCodeDialog(true) }} className={toggleBtnClass(false)} title="Insert Code Playground">
+        <Play className="w-5 h-5 mx-auto" />
+      </button>
+
+      <CodePlaygroundDialog
+        open={showCodeDialog}
+        onClose={() => setShowCodeDialog(false)}
+        onInsert={(lang, code, instructions) => {
+          const encodedCode = btoa(unescape(encodeURIComponent(code)))
+          const encodedInstructions = instructions ? btoa(unescape(encodeURIComponent(instructions))) : ''
+          // Restore cursor position before inserting
+          if (savedSelectionRef.current) {
+            editor.commands.setTextSelection(savedSelectionRef.current)
+          }
+          editor.chain().focus().insertContent([
+            {
+              type: 'codePlayground',
+              attrs: {
+                language: lang,
+                starterCode: encodedCode,
+                instructions: encodedInstructions,
+              },
+            },
+            { type: 'paragraph' },
+          ]).run()
+        }}
+      />
     </div>
   )
 }
@@ -86,12 +157,12 @@ export default function LessonEditor({ initialLesson }: { initialLesson: any }) 
   const [readingTime, setReadingTime] = useState(initialLesson.time_estimated_minutes || 0)
 
   const editor = useEditor({
-    extensions: [StarterKit, ImageExtension.configure({ inline: true })],
+    extensions: [StarterKit, ImageExtension.configure({ inline: true }), CodePlaygroundNode],
     content: initialLesson.content || '',
     immediatelyRender: false,
     editorProps: {
       attributes: {
-        class: 'prose prose-invert prose-p:text-slate-300 prose-headings:text-white prose-a:text-cyan-400 hover:prose-a:text-cyan-300 prose-strong:text-cyan-400 prose-code:text-fuchsia-400 prose-code:bg-[#1c1b1b] prose-code:px-1 prose-pre:bg-[#131313] prose-pre:border prose-pre:border-slate-800 prose-img:rounded-sm focus:outline-none min-h-[500px] w-full max-w-none p-6 bg-[#131313] border border-t-0 border-slate-800',
+        class: 'prose prose-invert prose-p:text-slate-300 prose-headings:font-heading prose-headings:text-white prose-a:text-primary hover:prose-a:text-white prose-strong:text-primary prose-code:text-fuchsia-400 prose-code:bg-white/[0.05] prose-code:px-2 prose-pre:bg-black/80 prose-pre:border prose-pre:border-white/10 prose-img:rounded-none focus:outline-none min-h-[600px] w-full max-w-none p-10 md:p-16 bg-black/40 border-x border-b border-white/5 backdrop-blur-3xl shadow-2xl',
       },
     },
     onUpdate: ({ editor }) => {
@@ -131,19 +202,20 @@ export default function LessonEditor({ initialLesson }: { initialLesson: any }) 
   }, [saveContent])
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto pb-24 font-body">
+    <div className="space-y-8 max-w-7xl mx-auto pb-64 font-body relative">
+      <div className="absolute inset-0 scanlines opacity-[0.02] pointer-events-none z-0"></div>
       
       {/* HEADER HUD */}
-      <div className="bg-[#1c1b1b] p-6 border-b-4 border-cyan-400 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 sticky top-0 z-30 shadow-xl">
-         <div className="flex-1 w-full space-y-4">
-             <div className="flex items-center gap-3">
-                <Terminal className="w-5 h-5 text-cyan-400" />
-                <span className="font-mono text-[10px] text-slate-500 uppercase tracking-widest">MODULE_ID: {initialLesson.id.slice(0, 8)}</span>
-                <span className="font-mono text-[10px] text-slate-500 uppercase tracking-widest px-2 border-l border-slate-800">
-                    LAST_SYNC: {isSaving ? 'SYNCING...' : lastSaved.toLocaleTimeString()}
+      <div className="bg-black/60 p-8 border-b-2 border-primary flex flex-col md:flex-row justify-between items-start md:items-end gap-10 sticky top-0 z-30 shadow-2xl backdrop-blur-2xl italic font-heading">
+         <div className="flex-1 w-full space-y-6">
+             <div className="flex items-center gap-6">
+                <Terminal className="w-5 h-5 text-primary shadow-glow-cyan animate-pulse" />
+                <span className="text-[10px] text-slate-600 font-black uppercase tracking-[0.3em]">MOD_ID: {initialLesson.id.slice(0, 12)}</span>
+                <span className="text-[10px] text-fuchsia-500 font-black uppercase tracking-[0.3em] px-4 border-l border-white/10">
+                    SYNC_STATUS: {isSaving ? 'UPLOADING...' : `RESTING_@_${lastSaved.toLocaleTimeString()}`}
                 </span>
-                <span className="font-mono text-[10px] text-lime-400 uppercase tracking-widest px-2 border-l border-slate-800">
-                    EST_TIME: {readingTime} MIN
+                <span className="text-[10px] text-emerald-500 font-black uppercase tracking-[0.3em] px-4 border-l border-white/10">
+                    DURATION: {readingTime}_CYCLES
                 </span>
              </div>
              
@@ -151,41 +223,43 @@ export default function LessonEditor({ initialLesson }: { initialLesson: any }) 
                 type="text" 
                 value={title} 
                 onChange={e => setTitle(e.target.value)}
-                className="w-full bg-transparent text-3xl font-black text-white uppercase tracking-tight focus:outline-none placeholder:text-slate-700"
+                className="w-full bg-transparent text-4xl md:text-5xl font-black text-white uppercase tracking-widest focus:outline-none placeholder:text-slate-800 text-shadow-neon-cyan glitch-text"
                 placeholder="MODULE_TITLE"
              />
              <input 
                 type="text" 
                 value={description} 
                 onChange={e => setDescription(e.target.value)}
-                className="w-full bg-transparent text-sm font-mono text-slate-400 tracking-widest uppercase focus:outline-none placeholder:text-slate-700"
-                placeholder="Short description defining module objectives..."
+                className="w-full bg-transparent text-[11px] font-black text-slate-500 tracking-[0.3em] uppercase focus:outline-none placeholder:text-slate-800 border-l-2 border-primary/20 pl-4 py-2 mt-2 not-italic"
+                placeholder="SYSTEM_INTEL_DESCRIPTION..."
              />
          </div>
 
-         <div className="flex items-center gap-3">
-             <Button variant="ghost" onClick={() => setIsPreview(!isPreview)} className="rounded-none h-12 bg-[#2a2a2a] hover:bg-[#353534] text-slate-300 font-mono text-[10px] tracking-widest uppercase border border-slate-800">
-                {isPreview ? <><EyeOff className="w-4 h-4 mr-2" /> EDIT_MODE</> : <><Eye className="w-4 h-4 mr-2" /> PREVIEW_MODE</>}
+         <div className="flex items-center gap-4">
+             <Button variant="ghost" onClick={() => setIsPreview(!isPreview)} className="rounded-none h-14 px-8 bg-white/[0.03] hover:bg-white/[0.1] text-slate-400 font-black text-[10px] tracking-[0.3em] uppercase border border-white/5 transition-all">
+                {isPreview ? <><EyeOff className="w-4 h-4 mr-3" /> EDIT_FLOW</> : <><Eye className="w-4 h-4 mr-3" /> QA_PREVIEW</>}
              </Button>
              
-             <Button onClick={() => { const next = !isPublished; setIsPublished(next); saveContent(true, next) }} className={`rounded-none h-12 font-mono text-[10px] tracking-widest uppercase font-bold border transition-colors ${isPublished ? 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700' : 'bg-lime-500 text-black border-lime-400 hover:bg-lime-600 shadow-[0_0_15px_rgba(163,230,53,0.3)]'}`}>
-                {isPublished ? "REVERT_TO_DRAFT" : "PUBLISH_MODULE"}
+             <Button onClick={() => { const next = !isPublished; setIsPublished(next); saveContent(true, next) }} className={`rounded-none h-14 px-8 font-black text-[10px] tracking-[0.4em] uppercase border transition-all italic ${isPublished ? 'bg-white/5 text-slate-500 border-white/10 hover:bg-white hover:text-black' : 'bg-fuchsia-600 text-white border-fuchsia-500 hover:bg-white hover:text-black shadow-glow-fuchsia'}`}>
+                {isPublished ? "CEASE_BROADCAST" : "INITIATE_BROADCAST"}
              </Button>
 
-             <Button onClick={() => saveContent(true)} disabled={isSaving} className="rounded-none h-12 bg-cyan-500 hover:bg-cyan-600 text-black font-bold uppercase tracking-widest font-mono text-[10px] shadow-[0_0_15px_rgba(34,211,238,0.3)] min-w-[120px]">
-                {isSaving ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : <><Save className="w-4 h-4 mr-2" /> FORCE_SYNC</>}
+             <Button onClick={() => saveContent(true)} disabled={isSaving} className="rounded-none h-14 px-10 bg-primary hover:bg-white text-black font-black uppercase tracking-[0.4em] text-[10px] shadow-glow-cyan min-w-[170px] border-none group transition-all">
+                {isSaving ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : <><Save className="w-5 h-5 mr-3 group-hover:rotate-12 transition-transform" /> FORCE_FLUSH</>}
              </Button>
          </div>
       </div>
 
       {isPreview ? (
-         <div className="bg-[#131313] border border-slate-800 p-8 min-h-[500px]">
-            <div className="prose prose-invert prose-p:text-slate-300 prose-headings:text-white prose-a:text-cyan-400 prose-strong:text-cyan-400 prose-code:text-fuchsia-400 prose-code:bg-[#1c1b1b] prose-code:px-1 prose-pre:bg-[#1a1a1a] prose-pre:border prose-pre:border-slate-800 prose-img:rounded-sm max-w-none" dangerouslySetInnerHTML={{ __html: sanitizeHTML(editor?.getHTML() || '') }} />
+         <div className="bg-black/40 border border-white/5 p-12 md:p-20 min-h-[600px] backdrop-blur-3xl shadow-2xl relative overflow-hidden group">
+            <div className="absolute inset-0 scanlines opacity-[0.03] pointer-events-none z-0"></div>
+            <div className="prose prose-invert prose-p:text-slate-300 prose-headings:font-heading prose-headings:italic prose-headings:font-black prose-headings:uppercase prose-headings:tracking-widest prose-headings:text-white prose-a:text-primary hover:prose-a:text-white prose-strong:text-primary prose-code:text-fuchsia-400 prose-code:bg-white/[0.05] prose-code:px-2 prose-pre:bg-black/80 prose-pre:border prose-pre:border-white/10 prose-img:rounded-none max-w-none relative z-10" dangerouslySetInnerHTML={{ __html: sanitizeHTML(editor?.getHTML() || '') }} />
          </div>
       ) : (
-         <div className="relative">
+         <div className="relative group overflow-hidden">
             <MenuBar editor={editor} />
             <EditorContent editor={editor} />
+            <div className="absolute bottom-0 right-0 p-8 opacity-5 pointer-events-none text-white font-heading text-8xl font-black italic select-none">DATA_WRITE</div>
          </div>
       )}
     </div>

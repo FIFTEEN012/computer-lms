@@ -1,40 +1,72 @@
 "use client"
-import { BarChart, Bar, Tooltip, ResponsiveContainer, Cell } from 'recharts'
+import { BarChart, Bar, Tooltip, ResponsiveContainer, Cell, XAxis, YAxis } from 'recharts'
 
 const data = [
-  { name: 'MON', uv: 4.2, color: '#22d3ee' }, // cyan-400 
-  { name: 'TUE', uv: 6.8, color: '#22d3ee' },
-  { name: 'WED', uv: 3.1, color: '#e879f9' }, // fuchsia-400
-  { name: 'THU', uv: 9.4, color: '#22d3ee' },
-  { name: 'FRI', uv: 5.9, color: '#22d3ee' },
-  { name: 'SAT', uv: 10.2, color: '#a3e635' }, // lime-400
-  { name: 'SUN', uv: 7.5, color: '#22d3ee' },
+  { name: 'MON', value: 4.2, color: '#00fbfb' },
+  { name: 'TUE', value: 6.8, color: '#00fbfb' },
+  { name: 'WED', value: 3.1, color: '#ffabf3' }, // Intense Pink
+  { name: 'THU', value: 9.4, color: '#00fbfb' },
+  { name: 'FRI', value: 5.9, color: '#00fbfb' },
+  { name: 'SAT', value: 10.2, color: '#79ff5b' }, // Intense Green
+  { name: 'SUN', value: 7.5, color: '#00fbfb' },
 ];
 
 export default function StudentActivityChart() {
   return (
-    <div className="h-64 relative w-full mb-6">
+    <div className="h-full w-full relative flex flex-col pt-4">
+      {/* Background Grid Lines */}
+      <div className="absolute inset-x-0 inset-y-8 flex flex-col justify-between opacity-[0.03] pointer-events-none z-0">
+        {[...Array(5)].map((_, i) => (
+          <div key={i} className="w-full border-t border-accent-primary"></div>
+        ))}
+      </div>
+
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           data={data}
-          margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
+          margin={{ top: 20, right: 0, left: -20, bottom: 20 }}
+          barGap={0}
         >
-          <Tooltip 
-            contentStyle={{ backgroundColor: '#131313', borderColor: '#334155', color: '#22d3ee', fontFamily: 'monospace', fontSize: '10px' }}
-            itemStyle={{ color: '#22d3ee' }}
-            cursor={{ fill: 'rgba(34, 211, 238, 0.1)' }}
-            formatter={(value: any) => [`${value} HOURS`, 'ACTIVE']}
+          <XAxis 
+            dataKey="name" 
+            axisLine={false} 
+            tickLine={false} 
+            tick={{ fill: '#839493', fontSize: 10, fontWeight: 700, fontFamily: 'var(--font-mono)' }} 
+            dy={15}
           />
-          <Bar dataKey="uv" radius={[0, 0, 0, 0]}>
+          <YAxis 
+            axisLine={false} 
+            tickLine={false} 
+            tick={{ fill: '#839493', fontSize: 8, fontWeight: 700, fontFamily: 'var(--font-mono)' }}
+            dx={-10}
+          />
+          <Tooltip 
+            contentStyle={{ 
+              backgroundColor: '#131313', 
+              border: '2px solid rgba(0, 251, 251, 0.4)', 
+              borderRadius: '0px',
+              fontFamily: 'var(--font-mono)', 
+              fontSize: '10px',
+              fontWeight: '900',
+              textTransform: 'uppercase',
+              color: '#00fbfb'
+            }}
+            cursor={{ fill: 'rgba(0, 251, 251, 0.05)' }}
+            formatter={(value: any) => [`${value} UNIT_HOURS`, 'UPLINK_DURATION']}
+            labelStyle={{ color: '#839493', marginBottom: '8px' }}
+          />
+          <Bar dataKey="value" radius={[0, 0, 0, 0]} barSize={45}>
             {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.color} fillOpacity={0.6} className="hover:opacity-100 transition-opacity cursor-crosshair stroke-transparent hover:stroke-white" strokeWidth={1} />
+              <Cell 
+                key={`cell-${index}`} 
+                fill={entry.color} 
+                fillOpacity={0.6}
+                className="hover:fill-opacity-100 transition-all duration-300 cursor-crosshair stroke-transparent hover:stroke-white" 
+              />
             ))}
           </Bar>
         </BarChart>
       </ResponsiveContainer>
-      <div className="mt-4 flex justify-between font-mono text-[10px] text-slate-500 uppercase tracking-widest pointer-events-none px-2 mx-auto">
-        {data.map(d => <span key={d.name} className={d.color === '#e879f9' ? 'text-fuchsia-400' : d.color === '#a3e635' ? 'text-lime-400' : ''}>{d.name}</span>)}
-      </div>
     </div>
   )
 }

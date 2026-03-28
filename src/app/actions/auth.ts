@@ -10,25 +10,36 @@ export async function signInAction(formData: z.infer<typeof loginSchema>) {
     return { error: 'Invalid input fields' }
   }
   try {
+    const { email, password } = result.data
+    console.log('[signInAction] Attempting login for:', email)
+    
+    const { createClient } = await import('@/lib/supabase/server')
+    const supabase = createClient()
+    
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
 
-  const { email, password } = result.data
-  const { createClient } = await import('@/lib/supabase/server')
-  const supabase = createClient()
-  
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  })
+    if (error) {
+      console.warn('[signInAction] Supabase Auth Error:', error.message)
+      return { error: error.message }
+    }
 
-  if (error) {
-    return { error: error.message }
-  }
+    if (!data.user) {
+      console.error('[signInAction] Login succeeded but user object missing')
+      return { error: 'AUTHENTICATION_ANOMALY: User missing' }
+    }
 
-  const { data: profile } = await supabase.from('profiles').select('role').eq('id', data.user.id).single()
+    const { data: profile } = await supabase.from('profiles').select('role').eq('id', data.user.id).single()
 
-  return { success: true, redirectUrl: profile?.role === 'teacher' ? '/teacher/dashboard' : '/student/dashboard' }
-  } catch (err: unknown) {
-    console.error('[signInAction]', err)
+    console.log('[signInAction] Authentication successful for:', email, 'Role:', profile?.role)
+    return { success: true, redirectUrl: profile?.role === 'teacher' ? '/teacher/dashboard' : '/student/dashboard' }
+  } catch (err: any) {
+    console.error('[signInAction] Fatal Error:', err)
+    if (err.message && err.message.includes('fetch')) {
+      return { error: `NETWORK_ERROR: The server failed to reach the database (Supabase). Please verify NEXT_PUBLIC_SUPABASE_URL is correct.` }
+    }
     return { error: `SYSTEM_ERROR: ${err instanceof Error ? err.message : 'Unknown error'}` }
   }
 }

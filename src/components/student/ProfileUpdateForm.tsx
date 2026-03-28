@@ -69,47 +69,47 @@ export default function ProfileUpdateForm({ currentName }: { currentName: string
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-8 font-body">
        
        <div className="relative group">
-          <label className="text-[10px] bg-[#1c1b1b] px-2 absolute -top-2 left-3 text-slate-500 uppercase tracking-widest group-focus-within:text-lime-400 transition-colors z-10">VISUAL_IDENTIFIER (AVATAR JPG/PNG)</label>
-          <div className="flex w-full bg-[#131313] border border-slate-800 h-12 relative z-0 items-center pl-4 cursor-pointer overflow-hidden group-hover:border-lime-400/50 transition-colors">
-             <Upload className="w-4 h-4 text-slate-500 mr-4 group-hover:text-lime-400 transition-colors" />
+          <label className="text-[10px] bg-bg-secondary px-3 absolute -top-2.5 left-4 text-text-muted uppercase tracking-[0.2em] font-black group-focus-within:text-accent-primary transition-colors z-10 italic">VISUAL_IDENTIFIER (AVATAR JPG/PNG)</label>
+          <div className="flex w-full bg-bg-primary/50 border border-border h-14 relative z-0 items-center pl-5 cursor-pointer overflow-hidden group-hover:border-accent-primary transition-all duration-500 shadow-inner">
+             <Upload className="w-4 h-4 text-text-muted mr-4 group-hover:text-accent-primary transition-colors" />
              <input 
                 type="file" 
                 accept="image/*"
                 onChange={handleAvatarChange}
                 disabled={loading || uploading}
-                className="w-full text-slate-400 file:hidden cursor-pointer bg-transparent uppercase font-mono text-[10px] tracking-widest focus:outline-none" 
+                className="w-[100%] text-text-muted file:hidden cursor-pointer bg-transparent uppercase font-heading text-[10px] tracking-widest focus:outline-none italic" 
              />
-             {uploading && <Loader2 className="w-4 h-4 text-cyan-400 animate-spin absolute right-4" />}
+             {uploading && <Loader2 className="w-4 h-4 text-accent-primary animate-spin absolute right-5" />}
           </div>
        </div>
 
        <div className="relative group">
-          <label className="text-[10px] bg-[#1c1b1b] px-2 absolute -top-2 left-3 text-slate-500 uppercase tracking-widest group-focus-within:text-cyan-400 transition-colors z-10">DESIGNATION (FULL NAME)</label>
+          <label className="text-[10px] bg-bg-secondary px-3 absolute -top-2.5 left-4 text-text-muted uppercase tracking-[0.2em] font-black group-focus-within:text-accent-primary transition-colors z-10 italic">DESIGNATION (FULL NAME)</label>
           <input 
              type="text" 
              name="fullName"
              defaultValue={currentName}
              disabled={loading}
-             className="w-full bg-[#131313] border border-slate-800 p-4 h-12 text-white focus:border-cyan-400 focus:outline-none transition-colors text-sm font-sans relative z-0" 
+             className="w-full bg-bg-primary/50 border border-border p-5 h-14 text-foreground focus:border-accent-primary focus:outline-none transition-all duration-500 text-sm font-heading tracking-widest uppercase relative z-0 italic shadow-inner" 
           />
        </div>
 
        <div className="relative group">
-          <label className="text-[10px] bg-[#1c1b1b] px-2 absolute -top-2 left-3 text-slate-500 uppercase tracking-widest group-focus-within:text-fuchsia-400 transition-colors z-10">SECURITY_KEY (NEW PASSWORD)</label>
+          <label className="text-[10px] bg-bg-secondary px-3 absolute -top-2.5 left-4 text-text-muted uppercase tracking-[0.2em] font-black group-focus-within:text-accent-secondary transition-colors z-10 italic">SECURITY_KEY (NEW PASSWORD)</label>
           <input 
              type="password" 
              name="password"
              disabled={loading}
              placeholder="Leave blank to keep current..."
-             className="w-full bg-[#131313] border border-slate-800 p-4 h-12 text-fuchsia-400 focus:border-fuchsia-400 focus:outline-none transition-colors text-sm font-sans placeholder:text-slate-700 relative z-0" 
+             className="w-full bg-bg-primary/50 border border-border p-5 h-14 text-accent-secondary focus:border-accent-secondary focus:outline-none transition-all duration-500 text-sm font-heading tracking-widest uppercase placeholder:text-text-muted/30 relative z-0 italic shadow-inner" 
           />
        </div>
 
-       <Button type="submit" disabled={loading} className="w-full rounded-none font-bold tracking-widest uppercase mt-6 bg-cyan-500 hover:bg-cyan-600 text-black shadow-[0_0_15px_rgba(34,211,238,0.3)] h-12">
-          {loading ? <Loader2 className="animate-spin w-5 h-5 mx-auto" /> : <><Save className="w-4 h-4 mr-2" /> OVERWRITE_PARAMETERS</>}
+       <Button type="submit" disabled={loading} className="w-full rounded-none font-black tracking-[0.4em] uppercase mt-8 bg-accent-primary hover:bg-accent-primary/80 text-bg-primary shadow-glow-cyan h-14 transition-all duration-500 hover:scale-[1.01] active:scale-[0.98] italic font-heading text-[11px]">
+          {loading ? <Loader2 className="animate-spin w-5 h-5 mx-auto" /> : <><Save className="w-4 h-4 mr-3" /> OVERWRITE_PARAMETERS</>}
        </Button>
     </form>
   )

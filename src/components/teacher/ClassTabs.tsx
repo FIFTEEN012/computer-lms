@@ -17,16 +17,18 @@ export default function ClassTabs({ classId }: { classId: string }) {
   ]
 
   return (
-    <div className="flex overflow-x-auto border-b border-slate-200 dark:border-slate-800 mb-8 relative z-10 hide-scrollbar bg-white dark:bg-[#131313] shadow-sm">
+    <div className="flex overflow-x-auto border-b border-white/5 mb-8 relative z-10 hide-scrollbar bg-black/40 backdrop-blur-xl shadow-2xl">
       {tabs.map((tab) => {
-        // Precise matching prevents /students triggering on /students/... nested paths if not desired, but .includes is okay for now
         const isActive = pathname.endsWith(tab.href) || pathname.includes(`${tab.href}/`)
 
         return (
           <Link key={tab.name} href={tab.href}>
-            <div className={`px-8 py-5 flex items-center gap-3 font-mono text-[10px] uppercase tracking-widest transition-all whitespace-nowrap cursor-pointer border-b-2 ${isActive ? 'text-emerald-500 border-emerald-500 bg-slate-50 dark:bg-[#1c1b1b]' : 'text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white border-transparent hover:border-slate-300 dark:hover:border-slate-700'}`}>
-              <tab.icon className={`w-4 h-4 ${isActive ? 'animate-pulse' : ''}`} />
+            <div className={`px-8 py-5 flex items-center gap-4 font-heading text-[10px] font-black uppercase tracking-[0.3em] transition-all whitespace-nowrap cursor-pointer border-b-2 italic ${isActive ? 'text-emerald-500 border-emerald-500 bg-white/[0.05] shadow-[inset_0_-10px_20px_rgba(16,185,129,0.05)]' : 'text-slate-600 border-transparent hover:text-white hover:border-white/20 hover:bg-white/[0.02]'}`}>
+              <tab.icon className={`w-4 h-4 transition-all duration-500 ${isActive ? 'text-emerald-400 shadow-glow-emerald animate-pulse rotate-3' : 'text-slate-700'}`} />
               {tab.name}
+              {isActive && (
+                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping absolute top-4 right-4"></span>
+              )}
             </div>
           </Link>
         )

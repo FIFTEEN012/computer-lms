@@ -3,9 +3,10 @@ import { redirect } from 'next/navigation'
 import nextDynamic from 'next/dynamic'
 const LessonEditor = nextDynamic(() => import('@/components/teacher/lessons/LessonEditor'), {
   loading: () => (
-    <div className="p-8 space-y-4 animate-pulse">
-      <div className="h-10 w-full bg-slate-800/30 rounded-sm" />
-      <div className="h-[500px] w-full bg-slate-800/30 rounded-sm" />
+    <div className="p-8 md:p-12 space-y-8 animate-pulse italic font-heading">
+      <div className="h-10 w-64 bg-white/5 border border-white/10" />
+      <div className="h-16 w-full bg-white/5 border border-white/10" />
+      <div className="h-[600px] w-full bg-white/5 border border-white/10" />
     </div>
   ),
   ssr: false
@@ -33,12 +34,18 @@ export default async function TeacherLessonEditPage({ params }: { params: { less
   if (!cls) redirect('/teacher/dashboard')
 
   return (
-    <div className="p-4 md:p-8 min-h-screen relative font-body text-slate-200 dark:bg-[#0e0e0e]/50 selection:bg-cyan-400/20 selection:text-cyan-400">
-      <Link href={`/teacher/classes/${lesson.class_id}/lessons`} className="inline-flex items-center text-[10px] font-mono uppercase tracking-widest text-slate-500 hover:text-cyan-400 transition-colors group mb-6">
-          <ArrowLeft className="w-3 h-3 mr-2 group-hover:-translate-x-1 transition-transform" /> RETURN_TO_SEQUENCE
-      </Link>
+    <div className="p-6 md:p-12 min-h-screen relative font-body text-slate-300 dark:bg-black selection:bg-primary/20 selection:text-primary overflow-hidden">
+      <div className="absolute inset-0 scanlines opacity-[0.03] pointer-events-none z-0"></div>
       
-      <LessonEditor initialLesson={lesson} />
+      <div className="max-w-7xl mx-auto relative z-10 italic">
+        <Link href={`/teacher/classes/${lesson.class_id}/lessons`} className="inline-flex items-center text-[10px] font-heading font-black uppercase tracking-[0.3em] text-slate-600 hover:text-primary transition-all group mb-10">
+            <ArrowLeft className="w-4 h-4 mr-3 group-hover:-translate-x-2 transition-transform" /> TERMINATE_SESSION
+        </Link>
+        
+        <div className="relative z-10">
+          <LessonEditor initialLesson={lesson} />
+        </div>
+      </div>
     </div>
   )
 }

@@ -2,11 +2,26 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { GRADE_WEIGHTS, calculateWeightedScore, getGradeLetter, getGradeColor } from '@/lib/utils/grades'
 import Link from 'next/link'
-import { ArrowLeft, TrendingUp } from 'lucide-react'
+import { ArrowLeft, TrendingUp, Award, Activity, Search, ShieldCheck, Database, LayoutGrid } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 export const dynamic = 'force-dynamic'
 
 const CATEGORIES = Object.keys(GRADE_WEIGHTS)
+
+const categoryTranslation: Record<string, string> = {
+  'Assignments': 'งานมอบหมาย',
+  'Quizzes': 'แบบทดสอบ',
+  'Midterm': 'สอบกลางภาค',
+  'Final': 'สอบปลายภาค'
+}
+
+const categoryEnglish: Record<string, string> = {
+  'Assignments': 'ASSIGNMENTS_CORE',
+  'Quizzes': 'QUIZ_ASSESSMENTS',
+  'Midterm': 'MIDTERM_EVAL',
+  'Final': 'FINAL_UPLINK'
+}
 
 export default async function StudentGradesPage() {
   const supabase = createClient()
@@ -16,7 +31,7 @@ export default async function StudentGradesPage() {
   // Get enrolled classes
   const { data: enrollments } = await supabase
     .from('class_enrollments')
-    .select('class_id, classes!inner(id, name)')
+    .select('class_id, classes!inner(id, name, class_code)')
     .eq('student_id', user.id)
 
   const classIds = (enrollments || []).map((e: any) => e.class_id)
@@ -52,6 +67,7 @@ export default async function StudentGradesPage() {
   const classCards = (enrollments || []).map((enrollment: any) => {
     const classId = enrollment.class_id
     const className = enrollment.classes.name
+    const classCode = enrollment.classes.class_code
 
     // My scores
     const classGrades = (myGrades || []).filter(g => g.class_id === classId)
@@ -79,7 +95,6 @@ export default async function StudentGradesPage() {
     const allClassGrades = (allGrades || []).filter(g => g.class_id === classId)
     const allClassAttempts = (allAttempts || []).filter(a => classQuizIds.includes(a.quiz_id))
 
-    // Get distinct students
     const studentIds = new Set([
       ...allClassGrades.map(g => g.student_id),
       ...allClassAttempts.map(a => a.student_id),
@@ -108,81 +123,153 @@ export default async function StudentGradesPage() {
 
     const classAvg = count > 0 ? Math.round(totalWeighted / count) : 0
 
-    return { classId, className, myWeighted, myBreakdown, myLetter: getGradeLetter(myWeighted), classAvg }
+    return { classId, className, classCode, myWeighted, myBreakdown, myLetter: getGradeLetter(myWeighted), classAvg }
   })
 
   return (
-    <div className="p-4 md:p-8 min-h-screen relative font-body text-slate-200 dark:bg-[#0e0e0e]/50 selection:bg-cyan-400/20 overflow-x-hidden">
-      <div className="fixed top-0 right-0 p-4 opacity-5 pointer-events-none z-0">
-        <div className="font-mono text-[150px] leading-none select-none font-black text-cyan-500">M/G</div>
+    <div className="flex flex-col gap-10 py-6 h-full overflow-hidden">
+      {/* HEADER SECTION - PERFORMANCE MATRIX */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 border-l-8 border-accent-primary pl-10 py-4 relative group shrink-0">
+        <div className="absolute inset-0 bg-accent-primary/[0.02] -z-10 transition-opacity opacity-0 group-hover:opacity-100"></div>
+        <div className="space-y-3">
+          <div className="flex items-center gap-4 mb-2">
+            <Link href="/student/dashboard" className="p-2 bg-bg-secondary border border-accent-primary/20 hover:bg-accent-primary/10 transition-colors group/back">
+              <ArrowLeft className="w-4 h-4 text-accent-primary group-hover/back:-translate-x-1 transition-transform" />
+            </Link>
+            <span className="font-mono text-[10px] text-accent-primary tracking-[0.4em] uppercase font-black italic">RETURN_TO_CORE_DASHBOARD</span>
+          </div>
+          <h1 className="font-heading text-6xl font-black uppercase tracking-tighter text-foreground italic shadow-glow-cyan/20 translate-x-[-4px]">
+             GRADE_ARCHIVE
+          </h1>
+          <p className="font-mono text-accent-primary/60 text-sm tracking-[0.4em] uppercase font-bold italic animate-pulse">
+             DECRYPTING_PERFORMANCE_METRICS // SOURCE: NODE_CS_LMS_2.5
+          </p>
+        </div>
+        
+        {/* Status Hub */}
+        <div className="flex items-center gap-8 bg-bg-secondary p-6 border border-accent-primary/20 neon-glow-cyan relative overflow-hidden group-hover:border-accent-primary/40 transition-colors">
+          <div className="flex flex-col items-end">
+             <span className="font-heading text-[10px] text-accent-primary/60 uppercase tracking-[0.3em] font-black italic">DATA_INTEGRITY</span>
+             <span className="font-mono text-lg font-black text-foreground digital-display">VERIFIED_SECURE</span>
+          </div>
+          <ShieldCheck className="w-10 h-10 text-accent-primary animate-pulse" />
+        </div>
       </div>
 
-      <div className="relative z-10 w-full max-w-4xl mx-auto space-y-6">
-        <Link href="/student/dashboard" className="inline-flex items-center text-[10px] font-mono uppercase tracking-widest text-slate-500 hover:text-cyan-400 transition-colors group">
-          <ArrowLeft className="w-3 h-3 mr-2 group-hover:-translate-x-1 transition-transform" /> DASHBOARD
-        </Link>
-
-        <div className="border-b border-slate-800 pb-6">
-          <div className="font-mono text-[10px] text-cyan-400 uppercase tracking-widest bg-cyan-400/10 inline-block px-3 py-1 mb-3">MY_GRADES</div>
-          <h1 className="text-2xl md:text-4xl font-black tracking-tighter text-white uppercase">Performance Matrix</h1>
-        </div>
-
+      {/* CORE LIST - Viewport Fitted */}
+      <div className="flex-1 overflow-y-auto custom-scrollbar pr-4 pb-12">
         {classCards.length === 0 ? (
-          <div className="py-16 text-center border-2 border-dashed border-slate-800 bg-[#131313]">
-            <p className="font-mono text-[10px] text-slate-600 uppercase tracking-widest">NO_CLASSES_ENROLLED</p>
+          <div className="bg-bg-secondary/40 border border-accent-primary/10 p-32 text-center relative overflow-hidden group shadow-2xl hover:border-accent-primary/40 transition-all italic">
+             <div className="absolute inset-0 scanlines-tv opacity-[0.05] pointer-events-none"></div>
+             <Search className="w-24 h-24 text-accent-primary/20 mx-auto mb-10 animate-pulse drop-shadow-glow-cyan" />
+             <p className="font-mono text-sm text-text-muted font-black uppercase tracking-[0.6em] leading-relaxed relative z-10">
+                // ERROR_404: NO_GRADE_STREAMS_DETECTED
+             </p>
           </div>
         ) : (
-          <div className="space-y-6">
-            {classCards.map(card => {
+          <div className="space-y-12">
+            {classCards.map((card, i) => {
               const diff = card.myWeighted - card.classAvg
               return (
-                <div key={card.classId} className="bg-[#131313] border border-slate-800">
-                  {/* Card Header */}
-                  <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
-                    <h3 className="font-sans font-black text-sm text-white uppercase">{card.className}</h3>
-                    <div className="flex items-center gap-3">
-                      <span className={`font-mono text-2xl font-black px-3 py-1 border ${card.myWeighted >= 70 ? 'border-emerald-500/50 text-emerald-400 bg-emerald-500/10' : card.myWeighted >= 50 ? 'border-amber-500/50 text-amber-400 bg-amber-500/10' : 'border-red-500/50 text-red-400 bg-red-500/10'}`}>
-                        {card.myLetter}
-                      </span>
-                    </div>
-                  </div>
+                <div key={card.classId} className="bg-bg-secondary/40 border border-accent-primary/10 relative group hover:bg-bg-elevated/40 hover:border-accent-primary/40 transition-all duration-700 flex flex-col overflow-hidden shadow-2xl">
+                   {/* Background Sequence Marker */}
+                   <div className="absolute -top-4 -right-4 p-4 opacity-[0.03] font-mono text-9xl italic font-black text-white pointer-events-none group-hover:opacity-10 transition-opacity">
+                     {i < 9 ? `0${i+1}` : i+1}
+                   </div>
 
-                  {/* Category Breakdown */}
-                  <div className="p-6">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                   {/* Card Header Area */}
+                   <div className="p-10 border-b border-accent-primary/5 flex flex-col md:flex-row justify-between items-start md:items-center gap-8 bg-bg-secondary/60">
+                      <div className="flex-1">
+                         <div className="flex items-center gap-4 mb-4">
+                            <Database className="w-5 h-5 text-accent-primary/40" />
+                            <span className="font-mono text-[10px] text-accent-primary font-black uppercase tracking-[0.4em] italic mb-1 pt-1">NODE_SECTOR: {card.classCode}</span>
+                         </div>
+                         <h3 className="font-thai-heading text-3xl font-black text-foreground uppercase tracking-tight group-hover:text-accent-primary transition-colors italic leading-tight">{card.className}</h3>
+                      </div>
+                      
+                      {/* Big Grade Badge */}
+                      <div className="flex items-center gap-10">
+                        <div className="flex flex-col items-end">
+                           <span className="font-mono text-[9px] text-text-muted uppercase tracking-[0.4em] font-black italic mb-2">FINAL_GRADE</span>
+                           <div className={cn("text-6xl font-heading font-black italic digital-display leading-none", 
+                             card.myWeighted >= 80 ? "text-accent-tertiary neon-glow-green" : 
+                             card.myWeighted >= 50 ? "text-accent-primary neon-glow-cyan" : "text-accent-secondary neon-glow-pink"
+                           )}>
+                              {card.myLetter}
+                           </div>
+                        </div>
+                      </div>
+                   </div>
+
+                   {/* Grade Breakdown Visual Grid */}
+                   <div className="p-10 grid grid-cols-2 lg:grid-cols-4 gap-8">
                       {CATEGORIES.map(cat => (
-                        <div key={cat} className="text-center border border-slate-800 p-3 bg-[#0e0e0e]">
-                          <div className={`text-xl font-black font-sans ${getGradeColor(card.myBreakdown[cat])}`}>{card.myBreakdown[cat]}%</div>
-                          <div className="font-mono text-[8px] text-slate-500 uppercase tracking-widest mt-1">{cat}</div>
-                          <div className="font-mono text-[8px] text-slate-700 mt-0.5">Weight: {GRADE_WEIGHTS[cat as keyof typeof GRADE_WEIGHTS]}%</div>
+                        <div key={cat} className="p-8 bg-bg-primary/40 border border-accent-primary/5 flex flex-col items-center justify-center group/cat hover:border-accent-primary/30 transition-all relative">
+                           <div className="absolute top-2 left-2 font-mono text-[8px] opacity-10 font-bold tracking-widest">{cat.toUpperCase()}</div>
+                           <div className={cn("text-4xl font-heading font-black italic digital-display mb-3", getGradeColor(card.myBreakdown[cat]))}>
+                             {card.myBreakdown[cat]}%
+                           </div>
+                           <div className="font-thai-heading text-[11px] text-text-muted uppercase tracking-widest font-black group-hover/cat:text-foreground transition-colors">{categoryTranslation[cat]}</div>
+                           <div className="font-mono text-[8px] text-text-dim mt-2 tracking-[0.2em] font-black italic">{categoryEnglish[cat]}</div>
+                           
+                           {/* Corner Brackets for Category */}
+                           <div className="bracket-tl w-1.5 h-1.5 border-accent-primary/20"></div>
+                           <div className="bracket-br w-1.5 h-1.5 border-accent-primary/20"></div>
                         </div>
                       ))}
-                    </div>
+                   </div>
 
-                    {/* Weighted / Comparison */}
-                    <div className="flex flex-wrap items-center justify-between gap-4 p-4 border border-slate-800 bg-[#0e0e0e]">
-                      <div>
-                        <div className="font-mono text-[9px] text-slate-500 uppercase tracking-widest mb-1">YOUR_WEIGHTED_SCORE</div>
-                        <span className={`text-3xl font-black font-sans ${getGradeColor(card.myWeighted)}`}>{card.myWeighted}%</span>
+                   {/* Performance Feedback Bar */}
+                   <div className="px-10 py-8 bg-bg-secondary/40 border-t border-accent-primary/5 grid grid-cols-1 md:grid-cols-3 gap-10">
+                      <div className="flex flex-col border-r border-accent-primary/5">
+                        <span className="font-mono text-[9px] text-accent-primary uppercase tracking-[0.4em] font-black italic mb-3">WEIGHTED_OVERALL</span>
+                        <div className="flex items-baseline gap-4">
+                           <span className={cn("text-4xl font-heading font-black italic digital-display leading-none", getGradeColor(card.myWeighted))}>{card.myWeighted}%</span>
+                           <div className="h-6 w-[1px] bg-accent-primary/20 rotate-12"></div>
+                           <span className="text-[10px] text-text-muted uppercase font-black italic tracking-widest">NET_SCORE</span>
+                        </div>
                       </div>
-                      <div className="text-center">
-                        <div className="font-mono text-[9px] text-slate-500 uppercase tracking-widest mb-1">CLASS_AVERAGE</div>
-                        <span className="text-lg font-bold font-mono text-slate-400">{card.classAvg}%</span>
+                      
+                      <div className="flex flex-col border-r border-accent-primary/5">
+                        <span className="font-mono text-[9px] text-text-muted uppercase tracking-[0.4em] font-black italic mb-3">CLASS_AVG_MATRIX</span>
+                        <div className="flex items-baseline gap-4">
+                           <span className="text-3xl font-heading font-black text-foreground/40 italic digital-display leading-none">{card.classAvg}%</span>
+                           <LayoutGrid className="w-4 h-4 text-text-muted/20" />
+                        </div>
                       </div>
-                      <div className="text-center">
-                        <div className="font-mono text-[9px] text-slate-500 uppercase tracking-widest mb-1">VS_AVG</div>
-                        <span className={`text-lg font-bold font-mono flex items-center gap-1 ${diff >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                          <TrendingUp className={`w-3 h-3 ${diff < 0 ? 'rotate-180' : ''}`} />
-                          {diff >= 0 ? '+' : ''}{diff}%
-                        </span>
+
+                      <div className="flex flex-col">
+                        <span className="font-mono text-[9px] text-accent-secondary uppercase tracking-[0.4em] font-black italic mb-3">DEVIATION_PROTOCOL</span>
+                        <div className="flex items-center gap-6">
+                           <div className={cn("text-3xl font-heading font-black italic digital-display flex items-center gap-3", diff >= 0 ? "text-accent-tertiary" : "text-accent-secondary")}>
+                              {diff >= 0 ? <TrendingUp className="w-5 h-5" /> : <TrendingUp className="w-5 h-5 rotate-180" />}
+                              {diff >= 0 ? '+' : ''}{diff}%
+                           </div>
+                           <div className={cn("w-3 h-3 animate-pulse shadow-glow-cyan", diff >= 0 ? "bg-accent-tertiary" : "bg-accent-secondary")}></div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
+                   </div>
+
+                   {/* Final Visual Progress Meter */}
+                   <div className="h-1 w-full bg-accent-primary/5 overflow-hidden">
+                      <div className={cn("h-full transition-all duration-1000 ease-in-out w-0 group-hover:w-full", getGradeColor(card.myWeighted).replace('text-', 'bg-'))} style={{ width: `${card.myWeighted}%` }}></div>
+                   </div>
                 </div>
               )
             })}
           </div>
         )}
+      </div>
+
+      {/* FOOTER DIAGNOSTICS */}
+      <div className="flex items-center justify-between border-t border-accent-primary/10 pt-6 font-mono text-[9px] text-text-muted uppercase tracking-[0.4em] font-black italic shrink-0">
+         <div className="flex items-center gap-8">
+            <div className="flex items-center gap-3">
+               <Activity className="w-3 h-3 text-accent-primary animate-pulse" />
+               SYNC_STATUS: <span className="text-foreground">STABLE_CONNECT_RX-44</span>
+            </div>
+         </div>
+         <div className="text-accent-primary/30">PROTOCOL_V2 // UPLINK_SUCCESSFUL</div>
       </div>
     </div>
   )

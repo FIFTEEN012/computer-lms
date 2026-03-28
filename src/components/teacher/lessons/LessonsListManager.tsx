@@ -56,10 +56,13 @@ export default function LessonsListManager({ initialLessons, classId }: { initia
 
   if (items.length === 0) {
     return (
-      <div className="py-12 border border-slate-800 bg-[#1c1b1b] flex flex-col items-center justify-center relative overflow-hidden text-slate-500">
-         <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,rgba(0,0,0,0.02),rgba(0,0,0,0.02)_1px,transparent_1px,transparent_4px)] z-0"></div>
-         <Terminal className="w-12 h-12 mb-4 opacity-50 relative z-10" />
-         <p className="font-mono text-[10px] tracking-widest uppercase text-center max-w-sm relative z-10">AWAITING_CONTENT.<br/>INITIALIZE NEW MODULE TO POPULATE SEQUENCE.</p>
+      <div className="py-24 border border-white/5 bg-black/40 flex flex-col items-center justify-center relative overflow-hidden text-slate-500 group">
+         <div className="absolute inset-0 scanlines opacity-[0.05] pointer-events-none z-0"></div>
+         <Terminal className="w-16 h-16 mb-8 text-primary opacity-30 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700 relative z-10 shadow-glow-cyan" />
+         <p className="font-heading text-[11px] tracking-[0.4em] uppercase text-center max-w-sm relative z-10 font-black italic leading-relaxed text-slate-600 group-hover:text-slate-400 transition-colors">
+            // AWAITING_CONTENT_MANIFEST<br/>
+            INITIALIZE NEW MODULE TO POPULATE SEQUENCE.
+         </p>
       </div>
     )
   }

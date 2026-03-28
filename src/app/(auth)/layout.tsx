@@ -1,43 +1,42 @@
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen relative flex items-center justify-center bg-slate-50 dark:bg-[#0a0a0a] text-slate-900 dark:text-slate-100 selection:bg-primary/30 selection:text-primary overflow-hidden">
+    <div className="min-h-screen relative flex items-center justify-center bg-bg-primary text-text-main selection:bg-accent-primary/30 selection:text-white overflow-hidden">
       
-      {/* Ambient Grid overlay */}
-      <div className="fixed inset-0 z-0 pointer-events-none opacity-20 dark:opacity-40" 
-           style={{
-             backgroundSize: '24px 24px',
-             backgroundImage: 'linear-gradient(to right, rgba(128, 128, 128, 0.2) 1px, transparent 1px), linear-gradient(to bottom, rgba(128, 128, 128, 0.2) 1px, transparent 1px)'
-           }}>
-      </div>
-
-      {/* Cyberpunk ambient blooms */}
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
-      <div className="fixed top-0 right-0 w-[400px] h-[400px] bg-blue-500/10 rounded-full blur-[100px] pointer-events-none z-0"></div>
+      {/* Global Overlays */}
+      <div className="fixed inset-0 grid-overlay opacity-30 pointer-events-none z-0"></div>
+      <div className="fixed inset-0 scanlines-tv opacity-[0.08] pointer-events-none z-[100]"></div>
 
       {/* Hero Branding Header */}
-      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-8 h-20 bg-slate-50/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
-        <div className="flex items-center gap-4">
-          <div className="w-10 h-10 bg-primary flex items-center justify-center">
-            <span className="text-primary-foreground font-bold font-mono text-xl">{'>_'}</span>
+      <header className="fixed top-0 w-full z-[110] flex justify-between items-center px-12 h-16 bg-bg-secondary/80 backdrop-blur-3xl border-b border-accent-primary/10 shadow-[0_0_20px_rgba(0,251,251,0.05)]">
+        <div className="flex items-center gap-6">
+          <div className="w-10 h-10 bg-accent-primary flex items-center justify-center group-hover:rotate-90 transition-transform duration-500">
+             <span className="text-bg-primary font-black font-heading text-xl italic translate-y-[1px]">K</span>
           </div>
-          <h1 className="font-black text-xl tracking-widest text-primary uppercase hidden sm:block">KINETIC_LMS</h1>
+          <h1 className="font-heading font-black text-2xl tracking-[0.2em] text-accent-primary uppercase italic neon-glaze glitch-text" data-text="KINETIC_TERMINAL">
+             KINETIC_TERMINAL
+          </h1>
         </div>
-        <div className="hidden md:flex items-center gap-6 font-mono text-[10px] tracking-widest text-slate-400 dark:text-slate-500 uppercase">
-          <span>System_Status: <span className="text-emerald-500">Online</span></span>
-          <span>Latency: 14MS</span>
+        <div className="hidden md:flex items-center gap-10 font-mono text-[9px] tracking-[0.4em] text-text-muted/40 uppercase font-black italic">
+          <div className="flex items-center gap-3">
+             <div className="w-2 h-2 bg-accent-tertiary rounded-full animate-ping opacity-60" />
+             AUTH_SERVICE: <span className="text-accent-tertiary shadow-glow-emerald">READY</span>
+          </div>
+          <span>UPLINK_STABLE_4.9</span>
         </div>
       </header>
       
-      {children}
+      <main className="relative z-10 w-full flex items-center justify-center p-6 mt-16 pb-24">
+         {children}
+      </main>
       
-      {/* Footer */}
-      <footer className="absolute bottom-0 w-full py-6 px-12 z-50 flex flex-col md:flex-row justify-between items-center bg-slate-50/50 dark:bg-[#0a0a0a]/50 backdrop-blur-sm border-t border-slate-200 dark:border-slate-800">
-        <div className="font-mono text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-tighter mb-4 md:mb-0">
-          © 2026 KINETIC_LMS // ALL_RIGHTS_RESERVED
+      {/* Industrial Footer */}
+      <footer className="absolute bottom-0 w-full py-6 px-12 z-[110] flex flex-col md:flex-row justify-between items-center bg-bg-secondary/50 backdrop-blur-3xl border-t border-accent-primary/5">
+        <div className="font-mono text-[10px] text-text-muted/30 uppercase tracking-[0.2em] mb-4 md:mb-0 italic font-black">
+          © 2026 CS_LMS_PRO_V2.5 // <span className="text-accent-primary/40">ARCHITECT_BOONL</span>
         </div>
-        <div className="flex gap-8 font-mono text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-tighter">
-          <a href="#" className="hover:text-primary transition-colors">System Status</a>
-          <a href="#" className="hover:text-primary transition-colors">API</a>
+        <div className="flex gap-10 font-mono text-[9px] text-text-muted/30 uppercase tracking-[0.3em] font-black italic">
+          <a href="#" className="hover:text-accent-primary transition-colors hover:shadow-glow-cyan">SYSTEM_PROTOCOL</a>
+          <a href="#" className="hover:text-accent-secondary transition-colors hover:shadow-glow-pink">SECURITY_UPLINK</a>
         </div>
       </footer>
     </div>

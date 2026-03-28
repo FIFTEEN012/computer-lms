@@ -24,61 +24,68 @@ export default function XPBar({ xp, showLabel = true, compact = false }: { xp: n
 
   if (compact) {
     return (
-      <div className="flex items-center gap-2">
-        <span className="text-lg">{info.emoji}</span>
+      <div className="flex items-center gap-3 font-heading italic">
+        <span className="text-xl drop-shadow-glow-cyan">{info.emoji}</span>
         <div className="flex-1">
-          <div className="h-1.5 w-full bg-slate-800 overflow-hidden">
+          <div className="h-2 w-full bg-white/5 border border-white/5 overflow-hidden relative">
             <div
-              className={`h-full bg-gradient-to-r ${barColors[info.level] || barColors[1]} transition-all duration-1000 ease-out ${glowColors[info.level] || ''}`}
+              className={`h-full bg-gradient-to-r ${barColors[info.level] || barColors[1]} transition-all duration-1000 ease-out ${glowColors[info.level] || ''} relative z-10`}
               style={{ width: `${info.progress}%` }}
             />
+            <div className="absolute inset-0 scanlines opacity-[0.1] pointer-events-none z-20"></div>
           </div>
         </div>
-        <span className={`font-mono text-[9px] ${colorClass} font-bold`}>LV{info.level}</span>
+        <span className={`text-[10px] ${colorClass} font-black tracking-[0.2em]`}>LV_0{info.level}</span>
       </div>
     )
   }
 
   return (
-    <div className="bg-[#131313] border border-slate-800 p-4 space-y-3">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="text-2xl">{info.emoji}</span>
+    <div className="bg-black/60 border border-white/5 p-6 space-y-5 shadow-2xl backdrop-blur-2xl relative overflow-hidden group italic font-heading">
+      <div className="absolute inset-0 scanlines opacity-[0.03] pointer-events-none z-0"></div>
+      
+      <div className="flex items-center justify-between relative z-10">
+        <div className="flex items-center gap-4">
+          <span className="text-4xl drop-shadow-glow-cyan transform group-hover:scale-110 transition-transform duration-700">{info.emoji}</span>
           <div>
             {showLabel && (
-              <div className={`font-mono text-[9px] uppercase tracking-widest ${colorClass}`}>
-                LEVEL_{info.level}
+              <div className={`text-[10px] font-black uppercase tracking-[0.3em] ${colorClass} mb-1 animate-pulse`}>
+                INIT_PROTOCOL: SYNC_0{info.level}
               </div>
             )}
-            <div className="font-sans font-black text-white text-sm uppercase tracking-tight">
+            <div className="text-xl md:text-2xl font-black text-white uppercase tracking-widest glitch-text">
               {info.name}
             </div>
           </div>
         </div>
         <div className="text-right">
-          <div className={`font-mono text-lg font-black ${colorClass}`}>{xp.toLocaleString()}</div>
-          <div className="font-mono text-[9px] text-slate-600 uppercase tracking-widest">TOTAL_XP</div>
+          <div className={`text-2xl font-black ${colorClass} text-shadow-neon-cyan`}>{xp.toLocaleString()}</div>
+          <div className="text-[10px] text-slate-700 font-black uppercase tracking-[0.3em] mt-1">TOTAL_XP_ACCUMULATED</div>
         </div>
       </div>
 
-      <div className="space-y-1">
-        <div className="h-2 w-full bg-slate-800 relative overflow-hidden">
+      <div className="space-y-4 relative z-10 px-1">
+        <div className="h-3 w-full bg-white/5 border border-white/5 relative overflow-hidden">
           <div
-            className={`h-full bg-gradient-to-r ${barColors[info.level] || barColors[1]} transition-all duration-1000 ease-out ${glowColors[info.level] || ''}`}
+            className={`h-full bg-gradient-to-r ${barColors[info.level] || barColors[1]} transition-all duration-1000 ease-out ${glowColors[info.level] || ''} relative z-10 shadow-[0_0_20px_rgba(var(--primary),0.3)]`}
             style={{ width: `${info.progress}%` }}
           />
-          {/* Scanline effect */}
-          <div className="absolute inset-0 bg-[repeating-linear-gradient(90deg,transparent,transparent_2px,rgba(0,0,0,0.1)_2px,rgba(0,0,0,0.1)_4px)] pointer-events-none" />
+          <div className="absolute inset-0 scanlines opacity-[0.2] pointer-events-none z-20" />
         </div>
-        <div className="flex justify-between font-mono text-[9px] text-slate-600 uppercase tracking-widest">
-          <span>{info.progress}%</span>
+        <div className="flex justify-between text-[10px] text-slate-700 font-black uppercase tracking-[0.3em] font-heading">
+          <span className="text-white bg-white/5 px-3 py-1 border border-white/10 shadow-[inset_0_0_10px_rgba(255,255,255,0.05)]">{info.progress}% SYNCED</span>
           {info.xpToNext > 0 ? (
-            <span>{info.xpToNext} XP TO LEVEL_{info.level + 1}</span>
+            <span className="flex items-center gap-2">
+               <span className="w-1.5 h-1.5 bg-primary rounded-full animate-ping"></span>
+               {info.xpToNext} XP TO NEXT_EVOLUTION
+            </span>
           ) : (
-            <span>MAX_LEVEL_REACHED</span>
+            <span className="text-emerald-500 shadow-glow-emerald px-3 py-1 bg-emerald-500/10 border border-emerald-500/20">PEAK_PERFORMANCE_REACHED</span>
           )}
         </div>
       </div>
+      
+      <div className="absolute bottom-0 right-0 p-4 opacity-5 pointer-events-none text-white font-heading text-6xl font-black italic select-none">XP_DATA</div>
     </div>
   )
 }

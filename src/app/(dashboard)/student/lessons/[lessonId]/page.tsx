@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Clock } from 'lucide-react'
 import StudentLessonReader from '@/components/student/lessons/StudentLessonReader'
 
 export const dynamic = 'force-dynamic'
@@ -17,7 +16,7 @@ export default async function StudentLessonViewPage({ params }: { params: { less
      .eq('id', params.lessonId)
      .eq('is_published', true)
      .single()
-     
+
   if (!lesson) redirect('/student/dashboard')
 
   // Verify explicit enrollment preventing rogue parameter URL jumps
@@ -34,36 +33,61 @@ export default async function StudentLessonViewPage({ params }: { params: { less
   const { data: progress } = await supabase.from('lesson_progress').select('completed_at').eq('lesson_id', lesson.id).eq('student_id', user.id).single()
   const isCompleted = !!progress?.completed_at
 
+  // Get adjacent lessons for prev/next navigation
+  const { data: allLessons } = await supabase
+    .from('lessons')
+    .select('id, title, lesson_order')
+    .eq('class_id', lesson.class_id)
+    .eq('is_published', true)
+    .order('lesson_order', { ascending: true })
+
+  const currentIndex = allLessons?.findIndex(l => l.id === lesson.id) ?? -1
+  const prevLesson = currentIndex > 0 ? allLessons?.[currentIndex - 1] : null
+  const nextLesson = allLessons && currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1] : null
+  const totalLessons = allLessons?.length ?? 0
+  const progressPercent = totalLessons > 0 ? Math.round(((currentIndex + 1) / totalLessons) * 100) : 0
+
   return (
-    <div className="p-4 md:p-8 min-h-screen relative font-body text-slate-200 dark:bg-[#0e0e0e]/50 selection:bg-cyan-400/20 selection:text-cyan-400 bg-gradient-to-b from-transparent to-[#0a0a0a]">
-      <div className="max-w-3xl mx-auto mb-8">
-         <Link href={`/student/classes/${lesson.class_id}`} className="inline-flex items-center text-[10px] font-mono uppercase tracking-widest text-slate-500 hover:text-cyan-400 transition-colors group mb-6">
-            <ArrowLeft className="w-3 h-3 mr-2 group-hover:-translate-x-1 transition-transform" /> TERMINATE_STREAM
-         </Link>
-         
-         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mt-2">
-            <div>
-               <div className="font-mono text-[10px] text-fuchsia-400 uppercase tracking-widest bg-fuchsia-400/10 inline-block px-3 py-1 mb-3">
-                 ACTIVE_STREAM_PROTOCOL
-               </div>
-               <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-white uppercase break-words">
-                 {lesson.title}
-               </h1>
-               {lesson.description && (
-                  <p className="font-mono text-xs text-slate-400 mt-4 max-w-xl">
-                     {lesson.description}
-                  </p>
-               )}
+    <div className="min-h-[calc(100vh-64px)] relative font-body text-on-surface grid-bg selection:bg-primary-fixed/20 selection:text-primary-fixed">
+      {/* Module Header - Stitch Style */}
+      <header className="mb-8 md:mb-12 px-2">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end border-l-4 border-primary-fixed pl-6 gap-6">
+          <div>
+            <Link href={`/student/classes/${lesson.class_id}`} className="font-headline text-primary-fixed text-sm tracking-[0.3em] uppercase opacity-60 hover:opacity-100 transition-opacity">
+              System Core / Learning
+            </Link>
+            <h1 className="font-headline text-3xl md:text-5xl font-black tracking-tighter text-white mt-2 uppercase">
+              {lesson.title}
+            </h1>
+            {lesson.description && (
+              <p className="font-body text-sm text-on-surface-variant mt-3 max-w-xl leading-relaxed">
+                {lesson.description}
+              </p>
+            )}
+          </div>
+          <div className="text-right shrink-0">
+            <div className="font-label text-xs tracking-widest text-outline uppercase mb-2">
+              Progress: {progressPercent}%
             </div>
-            
-            <div className="flex items-center text-slate-500 font-mono text-[10px] uppercase tracking-widest border border-slate-800 bg-[#1c1b1b] px-4 py-2 mt-4 md:mt-0">
-               <Clock className="w-3 h-3 mr-2 text-cyan-400" />
-               EST: {lesson.time_estimated_minutes || 0}_MIN
+            <div className="w-48 md:w-64 h-1 bg-surface-container-high overflow-hidden">
+              <div className="h-full bg-primary-fixed shadow-[0_0_10px_#00fbfb] transition-all duration-700" style={{ width: `${progressPercent}%` }} />
             </div>
-         </div>
-      </div>
-      
-      <StudentLessonReader lesson={lesson} classId={lesson.class_id} isCompleted={isCompleted} />
+            <div className="font-label text-[10px] tracking-widest text-outline/50 uppercase mt-1.5">
+              {lesson.time_estimated_minutes || 0} min est.
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <StudentLessonReader
+        lesson={lesson}
+        classId={lesson.class_id}
+        isCompleted={isCompleted}
+        prevLesson={prevLesson}
+        nextLesson={nextLesson}
+        lessonNumber={currentIndex + 1}
+        totalLessons={totalLessons}
+      />
     </div>
   )
 }

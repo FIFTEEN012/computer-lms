@@ -135,14 +135,59 @@ export async function markLessonCompleteAction(lessonId: string, classId: string
   const { oldXP, newXP } = await awardXP(user.id, 10, 'Lesson Completed', lessonId)
   const badgesAwarded = await checkAndAwardBadges(user.id)
 
+  // Update daily streak
+  const { checkAndUpdateStreak } = await import('@/lib/streak')
+  const streakResult = await checkAndUpdateStreak(user.id, 'lesson', 10)
+
   revalidatePath(`/student/classes/${classId}`)
   revalidatePath(`/student/lessons/${lessonId}`)
   revalidatePath(`/student/dashboard`)
   revalidatePath(`/student/leaderboard`)
-  
-  return { success: true, xpGained: 10, oldXP, newXP, badgesAwarded }
+
+  return { success: true, xpGained: 10, oldXP, newXP, badgesAwarded, streak: streakResult }
   } catch (err: unknown) {
     console.error('[markLessonCompleteAction]', err)
+    return { error: `SYSTEM_ERROR: ${err instanceof Error ? err.message : 'Unknown error'}` }
+  }
+}
+
+export async function awardCodePlaygroundXP(lessonId: string) {
+  try {
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: 'Unauthorized' }
+
+    const { awardXP } = await import('./gamification')
+    const adminDb = (await import('@supabase/supabase-js')).createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    )
+
+    // Only award once per lesson per student
+    const { data: existing } = await adminDb
+      .from('xp_transactions')
+      .select('id')
+      .eq('student_id', user.id)
+      .eq('reason', 'code_playground')
+      .eq('reference_id', lessonId)
+      .limit(1)
+
+    if (existing && existing.length > 0) {
+      return { success: true, alreadyAwarded: true, xpGained: 0 }
+    }
+
+    const { oldXP, newXP } = await awardXP(user.id, 5, 'code_playground', lessonId)
+
+    // Update daily streak
+    const { checkAndUpdateStreak } = await import('@/lib/streak')
+    const streakResult = await checkAndUpdateStreak(user.id, 'code_run', 5)
+
+    revalidatePath('/student/dashboard')
+    revalidatePath('/student/leaderboard')
+
+    return { success: true, xpGained: 5, oldXP, newXP, streak: streakResult }
+  } catch (err: unknown) {
+    console.error('[awardCodePlaygroundXP]', err)
     return { error: `SYSTEM_ERROR: ${err instanceof Error ? err.message : 'Unknown error'}` }
   }
 }

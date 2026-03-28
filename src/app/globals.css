@@ -4,66 +4,233 @@
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 235 86% 65%; /* Indigo/Blue hue */
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 235 86% 65%;
-    --radius: 0.75rem; /* rounded-xl base radius for Shadcn */
+    /* Kinetic Terminal Design Tokens - Dark (Primary) */
+    --bg-primary: #0e0e0e;
+    --bg-secondary: #131313;
+    --bg-tertiary: #1c1b1b;
+    --bg-elevated: #2a2a2a;
+    
+    --text-main: #e5e2e1;
+    --text-muted: #839493;
+    --text-dim: #3a4a49;
+    
+    --accent-primary: #00fbfb; /* Cyan Neon */
+    --accent-primary-dim: #00dddd;
+    --accent-secondary: #ffabf3; /* Pink Neon */
+    --accent-tertiary: #79ff5b; /* Green Neon */
+    
+    --border-color: rgba(131, 148, 147, 0.1);
+    --border-vibrant: rgba(0, 251, 251, 0.2);
+    
+    --font-heading: var(--font-heading), 'Space Grotesk', sans-serif;
+    --font-body: var(--font-body), 'IBM Plex Sans Thai', 'Inter', sans-serif;
+    --font-mono: var(--font-mono), 'JetBrains Mono', monospace;
+    --font-thai-heading: var(--font-thai-heading), 'Chakra Petch', sans-serif;
+
+    /* Shadcn Mappings */
+    --background: 240 10% 2%;
+    --foreground: 0 0% 90%;
+    --primary: 180 100% 49%;
+    --primary-foreground: 240 10% 2%;
+    --secondary: 310 100% 82%;
+    --secondary-foreground: 240 10% 2%;
+    --border: 180 20% 15%;
+    --input: 180 20% 10%;
+    --ring: 180 100% 49%;
   }
 
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 235 86% 65%;
-    --primary-foreground: 222.2 47.4% 1.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 235 86% 65%;
+  [data-theme="light"] {
+    /* Kinetic Terminal Design Tokens - Light (Metallic) */
+    --bg-primary: #e5e5e5;
+    --bg-secondary: #f0f0f0;
+    --bg-tertiary: #ffffff;
+    --bg-elevated: #d1d1d1;
+    
+    --text-main: #131313;
+    --text-muted: #5a5a5a;
+    --text-dim: #a0a0a0;
+    
+    --accent-primary: #006a6a;
+    --accent-primary-dim: #004f4f;
+    --accent-secondary: #810081;
+    --accent-tertiary: #095300;
+    
+    --border-color: rgba(0, 0, 0, 0.1);
+    --border-vibrant: rgba(0, 106, 106, 0.2);
+
+    /* Shadcn Mappings for Light */
+    --background: 0 0% 90%;
+    --foreground: 240 10% 2%;
+    --primary: 180 100% 21%;
+    --primary-foreground: 0 0% 100%;
+    --border: 0 0% 80%;
   }
 }
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: var(--border-color);
+    box-sizing: border-box;
   }
+  
   body {
-    @apply bg-background text-foreground;
+    background-color: var(--bg-primary);
+    color: var(--text-main);
+    font-family: var(--font-body);
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.01em;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+  }
+
+  /* Force 0px border radius for industrial look */
+  .rounded-none, *, .rounded-lg, .rounded-md, .rounded-sm, .rounded-xl, .button, .input, .card {
+    border-radius: 0px !important;
   }
 }
 
-/* Subtlety of Glassmorphism */
 @layer utilities {
-  .glass {
-    @apply bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-white/20 dark:border-slate-800/50 shadow-sm transition-all;
+  .grid-overlay {
+    background-image: linear-gradient(to right, rgba(58, 74, 73, 0.1) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(58, 74, 73, 0.1) 1px, transparent 1px);
+    background-size: 24px 24px;
   }
-  .glass-panel {
-    @apply bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-white/30 dark:border-slate-800/30 shadow-lg transition-all;
+
+  .scanlines-tv {
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.04));
+    background-size: 100% 2px, 3px 100%;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.12;
   }
+
+  .glitch-text {
+    position: relative;
+    display: inline-block;
+  }
+
+  .neon-glow-cyan {
+    box-shadow: 0 0 15px rgba(0, 251, 251, 0.15);
+    text-shadow: 0 0 5px rgba(0, 251, 251, 0.5);
+  }
+
+  .neon-glow-pink {
+    box-shadow: 0 0 15px rgba(254, 0, 254, 0.15);
+  }
+
+  .neon-glow-green {
+    box-shadow: 0 0 15px rgba(121, 255, 91, 0.15);
+  }
+
+  .glow-primary:hover {
+    box-shadow: 0 0 15px rgba(0, 251, 251, 0.4);
+  }
+
+  .ghost-border-magenta {
+    box-shadow: 0 0 0 1px rgba(255, 171, 243, 0.1);
+  }
+
+  .flicker-cyan {
+    border-left: 2px solid #00fbfb;
+    box-shadow: -4px 0 15px -4px rgba(0, 251, 251, 0.4);
+  }
+
+  .scanline-overlay {
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+                linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    background-size: 100% 2px, 3px 100%;
+    pointer-events: none;
+  }
+
+  .grid-bg {
+    background-image: linear-gradient(to right, rgba(58, 74, 73, 0.1) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(58, 74, 73, 0.1) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  .shadow-glow-cyan {
+    box-shadow: 0 0 8px rgba(0, 251, 251, 0.5);
+  }
+
+  .shadow-glow-pink {
+    box-shadow: 0 0 8px rgba(255, 171, 243, 0.5);
+  }
+
+  .shadow-glow-green {
+    box-shadow: 0 0 8px rgba(121, 255, 91, 0.5);
+  }
+
+  .neon-glaze {
+    background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .workstation-panel {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .digital-display {
+    font-family: var(--font-mono);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .clip-path-diag {
+    clip-path: polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10% );
+  }
+
+  /* Corner bracket utility */
+  .bracket-tl, .bracket-tr, .bracket-bl, .bracket-br {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    pointer-events: none;
+    border-color: var(--accent-primary);
+  }
+
+  .bracket-tl { top: -2px; left: -2px; border-top-width: 2px; border-left-width: 2px; }
+  .bracket-tr { top: -2px; right: -2px; border-top-width: 2px; border-right-width: 2px; }
+  .bracket-bl { bottom: -2px; left: -2px; border-bottom-width: 2px; border-left-width: 2px; }
+  .bracket-br { bottom: -2px; right: -2px; border-bottom-width: 2px; border-right-width: 2px; }
+
+  .thai-heading {
+    font-family: var(--font-thai-heading);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+}
+
+/* Animations from Stitch Spirit */
+@keyframes pulse-neon {
+  0%, 100% { opacity: 0.8; box-shadow: 0 0 10px var(--accent-primary); }
+  50% { opacity: 1; box-shadow: 0 0 20px var(--accent-primary); }
+}
+
+.animate-neon {
+  animation: pulse-neon 2s infinite ease-in-out;
+}
+
+/* Scrollbar customization */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--accent-primary-dim);
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-primary);
 }

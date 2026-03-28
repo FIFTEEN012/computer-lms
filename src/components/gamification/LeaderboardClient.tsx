@@ -38,32 +38,34 @@ export default function LeaderboardClient({ students, currentUserId, currentUser
   const currentUserRank = students.findIndex(s => s.id === currentUserId) + 1
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
+    <div className="space-y-12 animate-in fade-in duration-700 font-body italic">
+      <div className="absolute inset-0 scanlines opacity-[0.02] pointer-events-none z-0"></div>
+      
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-slate-800 pb-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-10 border-b border-white/5 pb-12 relative z-10">
         <div>
-          <div className="font-mono text-[10px] text-yellow-500 uppercase tracking-widest bg-yellow-500/10 inline-block px-3 py-1 mb-3">
-            GLOBAL_RANKINGS
+          <div className="text-[10px] text-yellow-500 font-black uppercase tracking-[0.3em] bg-yellow-500/10 inline-block px-4 py-1.5 mb-5 border border-yellow-500/20 shadow-glow-yellow font-heading">
+            GLOBAL_NETWORK_RANKINGS
           </div>
-          <h1 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter italic flex items-center">
-            <span className="w-3 h-10 md:h-14 bg-yellow-500 mr-4" />
+          <h1 className="text-4xl md:text-6xl font-black text-white uppercase tracking-widest italic flex items-center font-heading drop-shadow-glow-cyan">
+            <span className="w-1.5 h-12 md:h-16 bg-yellow-500 mr-6 shadow-glow-yellow animate-pulse" />
             LEADERBOARD
           </h1>
-          <p className="font-mono text-[10px] text-slate-500 uppercase tracking-widest mt-3 max-w-xl leading-relaxed">
-            Real-time XP rankings across the entire network. Top performers are displayed with their accumulated experience points.
+          <p className="text-[11px] text-slate-600 font-black uppercase tracking-[0.2em] mt-5 max-w-2xl leading-relaxed italic border-l-2 border-white/5 pl-6 not-italic font-heading">
+            Real-time synchronization of XP rankings across the Master Node. Evaluated performance metrics based on accumulated data streams and modular completion audits.
           </p>
         </div>
 
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-4 shrink-0 font-heading">
           {/* Time Filters */}
           {(['all', 'month', 'week'] as TimeFilter[]).map(f => (
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`font-mono text-[10px] uppercase tracking-widest px-4 py-2 border transition-all ${
+              className={`text-[10px] font-black uppercase tracking-[0.3em] px-6 py-3 border transition-all duration-300 ${
                 filter === f
-                  ? 'border-yellow-500 text-yellow-400 bg-yellow-500/10'
-                  : 'border-slate-800 text-slate-500 hover:border-slate-600 hover:text-white'
+                  ? 'border-yellow-500 text-black bg-yellow-500 shadow-glow-yellow -rotate-3'
+                  : 'border-white/5 text-slate-500 hover:border-white/20 hover:text-white bg-black/40'
               }`}
             >
               {f === 'all' ? 'ALL_TIME' : f === 'month' ? 'THIS_MONTH' : 'THIS_WEEK'}
@@ -73,38 +75,42 @@ export default function LeaderboardClient({ students, currentUserId, currentUser
       </div>
 
       {/* Current User Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
         <div className="md:col-span-2">
           <XPBar xp={currentUserXP} />
         </div>
-        <div className="bg-[#131313] border border-slate-800 p-4 flex items-center justify-between">
-          <div>
-            <div className="font-mono text-[9px] text-slate-500 uppercase tracking-widest">YOUR_RANK</div>
-            <div className="font-sans font-black text-3xl text-white mt-1">
-              {currentUserRank > 0 ? `#${currentUserRank}` : '—'}
+        <div className="bg-black/60 border border-white/5 p-8 flex items-center justify-between shadow-2xl backdrop-blur-2xl relative overflow-hidden group">
+          <div className="absolute inset-0 scanlines opacity-[0.03] pointer-events-none z-0"></div>
+          <div className="relative z-10 font-heading">
+            <div className="text-[10px] text-slate-600 font-black uppercase tracking-[0.3em] mb-2">PERSONAL_RANK_SYNC</div>
+            <div className="text-5xl font-black text-white mt-2 glitch-text tracking-tighter shadow-glow-cyan italic">
+              {currentUserRank > 0 ? `#${currentUserRank > 9 ? currentUserRank : '0' + currentUserRank}` : '—'}
             </div>
           </div>
-          <Trophy className="w-8 h-8 text-yellow-500/30" />
+          <Trophy className="w-12 h-12 text-yellow-500/20 group-hover:text-yellow-500/50 transition-all duration-700 relative z-10 group-hover:scale-125 group-hover:rotate-12" />
         </div>
       </div>
 
       {/* Podium */}
       {students.length >= 3 && (
-        <div className="bg-[#0e0e0e] border border-slate-800 p-4 md:p-6">
-          <div className="font-mono text-[10px] text-yellow-500/60 uppercase tracking-widest text-center mb-2">
-            ★ TOP_3_COMMANDERS ★
+        <div className="bg-black/40 border border-white/5 p-8 md:p-12 shadow-2xl backdrop-blur-3xl relative overflow-hidden">
+          <div className="absolute inset-0 scanlines opacity-[0.02] pointer-events-none z-0"></div>
+          <div className="text-[10px] text-yellow-500/60 font-black font-heading uppercase tracking-[0.4em] text-center mb-10 animate-pulse relative z-10">
+            ★ ELITE_COMMAND_UNITS_PODIUM ★
           </div>
-          <Podium players={podiumPlayers} />
+          <div className="relative z-10">
+            <Podium players={podiumPlayers} />
+          </div>
         </div>
       )}
 
       {/* Full Ranking List */}
-      <div>
-        <div className="font-mono text-[10px] text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-2">
-          <span className="w-2 h-2 bg-emerald-400 animate-pulse" />
-          FULL_RANKING // {students.length} NODES
+      <div className="relative z-10 font-heading">
+        <div className="text-[10px] text-slate-700 font-black uppercase tracking-[0.3em] mb-6 flex items-center gap-3">
+          <span className="w-2 h-2 bg-emerald-500 rounded-full animate-ping shadow-glow-emerald" />
+          ACTIVE_SYNCHRONIZATION // {students.length}_NODES_DETECTED
         </div>
-        <div className="space-y-2">
+        <div className="space-y-3">
           {students.map((student, idx) => (
             <LeaderboardRow
               key={student.id}
@@ -122,12 +128,12 @@ export default function LeaderboardClient({ students, currentUserId, currentUser
 
       {/* Badges Section */}
       {allBadges.length > 0 && (
-        <div>
-          <div className="font-mono text-[10px] text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
-            <span className="w-2 h-2 bg-yellow-500" />
-            YOUR_BADGES // {allBadges.filter((b: any) => b.earned).length}/{allBadges.length} UNLOCKED
+        <div className="relative z-10 font-heading">
+          <div className="text-[10px] text-slate-700 font-black uppercase tracking-[0.3em] mb-8 flex items-center gap-3">
+            <span className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse shadow-glow-yellow" />
+            ACHIEVEMENT_DECRYPTION // {allBadges.filter((b: any) => b.earned).length}/{allBadges.length}_STREAMS_UNLOCKED
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {allBadges.map((badge: any) => (
               <BadgeCard
                 key={badge.id}

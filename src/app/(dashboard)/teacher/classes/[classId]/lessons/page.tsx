@@ -30,34 +30,38 @@ export default async function TeacherClassLessonsPage({ params }: { params: { cl
   }
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 border-b border-slate-800 pb-4">
-         <div>
-            <h2 className="font-sans font-black text-2xl text-white uppercase tracking-widest flex items-center">
-               <span className="w-2 h-6 bg-cyan-400 mr-3"></span> ACTIVE_MODULES
+    <div className="space-y-10 animate-in fade-in duration-500 relative z-10 italic">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 border-b border-white/5 pb-8">
+         <div className="font-heading">
+            <h2 className="text-3xl md:text-4xl font-black text-white uppercase tracking-widest flex items-center italic glitch-text text-shadow-neon-cyan">
+               <span className="w-2.5 h-8 bg-cyan-400 mr-4 shadow-glow-cyan animate-pulse"></span> ACTIVE_MODULES
             </h2>
-            <p className="font-mono text-[10px] text-slate-500 uppercase tracking-widest mt-2">{lessons?.length || 0} NODES DETECTED_IN_SEQUENCE</p>
+            <p className="text-[10px] text-primary font-bold uppercase tracking-[0.3em] mt-4 flex items-center">
+               // {lessons?.length || 0} SECTOR_NODES_ALLOCATED_IN_SEQUENCE
+            </p>
          </div>
          
-         <form action={handleCreate} className="flex gap-2 w-full sm:w-auto">
+         <form action={handleCreate} className="flex gap-4 w-full sm:w-auto font-heading">
             <input 
                type="text" 
                name="title" 
-               placeholder="NEW MODULE TITLE..." 
+               placeholder="IDENTIFY_NEW_MODULE..." 
                required 
-               className="bg-[#131313] border border-slate-800 h-10 px-4 text-xs font-mono text-cyan-400 uppercase tracking-widest focus:outline-none focus:border-cyan-400 flex-1 sm:w-64"
+               className="bg-white/[0.03] border border-white/10 h-12 px-5 text-[10px] text-cyan-400 uppercase tracking-[0.3em] font-black focus:outline-none focus:border-cyan-400 flex-1 sm:w-80 group hover:bg-white/[0.05] transition-all"
             />
-            <Button type="submit" className="h-10 rounded-none bg-cyan-500 hover:bg-cyan-600 text-black font-bold uppercase tracking-widest font-mono text-[10px]">
-               <Plus className="w-4 h-4 mr-2" /> CREATE
+            <Button type="submit" className="h-12 px-8 rounded-none bg-primary text-black font-black uppercase tracking-[0.3em] text-[10px] hover:bg-white transition-all shadow-glow-cyan border-none italic group">
+               <Plus className="w-4 h-4 mr-3 group-hover:rotate-90 transition-transform" /> INITIALIZE
             </Button>
          </form>
       </div>
 
-      <div className="bg-[#0e0e0e] border border-slate-800 p-6 relative shadow-xl">
-         <div className="absolute top-0 right-0 p-2 opacity-5 pointer-events-none text-cyan-400 font-mono text-6xl font-black">L/M</div>
+      <div className="bg-black/40 border border-white/5 p-10 relative shadow-2xl overflow-hidden group">
+         <div className="absolute inset-0 scanlines opacity-[0.05] pointer-events-none z-0"></div>
+         <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none text-white font-heading text-8xl font-black italic">LM_MODULE</div>
          <div className="relative z-10">
             <LessonsListManager initialLessons={lessons || []} classId={params.classId} />
          </div>
+         <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-primary group-hover:w-full transition-all duration-1000 shadow-glow-cyan"></div>
       </div>
     </div>
   )

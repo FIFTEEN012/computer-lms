@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from 'react'
-import { Plus, Loader2 } from 'lucide-react'
+import { Plus, Loader2, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { joinClassAction } from '@/app/actions/student'
 import { useToast } from '@/hooks/useToast'
@@ -39,36 +39,40 @@ export default function EnrollClassModal() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="font-mono text-[10px] font-bold tracking-widest uppercase rounded-none h-10 shadow-[0_0_15px_rgba(34,211,238,0.3)] bg-cyan-500 hover:bg-cyan-600 text-black hover:text-black transition-all">
-          <Plus className="w-4 h-4 mr-2" /> REQUEST_ACCESS (JOIN)
+        <Button className="font-heading text-[10px] font-black tracking-[0.3em] uppercase rounded-none h-11 bg-cyan-500 hover:bg-white text-black transition-all shadow-glow-cyan italic border-none">
+          <Plus className="w-4 h-4 mr-3" /> REQUEST_ACCESS (JOIN)
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[450px] bg-[#131313] border-cyan-400 shadow-[0_0_40px_rgba(34,211,238,0.1)] rounded-none">
-        <DialogHeader>
-          <DialogTitle className="font-sans font-black tracking-widest uppercase text-white flex items-center">
-            <span className="w-2 h-4 bg-cyan-400 mr-3 animate-pulse"></span>
+      <DialogContent className="sm:max-w-[450px] bg-black/90 border-cyan-400 shadow-2xl rounded-none backdrop-blur-2xl">
+        <div className="absolute inset-0 scanlines opacity-[0.05] pointer-events-none z-0"></div>
+        <DialogHeader className="relative z-10">
+          <DialogTitle className="font-heading font-black tracking-[0.2em] uppercase text-white flex items-center italic text-shadow-neon-cyan">
+            <span className="w-2.5 h-5 bg-cyan-400 mr-4 shadow-glow-cyan"></span>
             MANUAL_NODE_INJECTION
           </DialogTitle>
         </DialogHeader>
         
-        <form onSubmit={handleEnrollment} className="space-y-6 mt-4 relative z-10 w-full">
-          <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,rgba(0,0,0,0.03),rgba(0,0,0,0.03)_1px,transparent_1px,transparent_2px)] pointer-events-none -z-10"></div>
+        <form onSubmit={handleEnrollment} className="space-y-8 mt-6 relative z-10 w-full italic font-heading">
           
           <div className="relative group">
-            <label className="text-[10px] bg-[#131313] px-2 absolute -top-2 left-3 text-slate-500 uppercase tracking-widest group-focus-within:text-cyan-400 transition-colors z-10">ACCESS_CODE</label>
+            <label className="text-[10px] text-slate-500 uppercase tracking-[0.3em] group-focus-within:text-cyan-400 transition-colors font-black mb-3 block">ACCESS_CODE</label>
             <input 
                type="text"
                required
                value={code}
                onChange={(e) => setCode(e.target.value)}
                disabled={loading} 
-               className="w-full bg-[#1c1b1b] border border-slate-800 p-4 h-14 text-cyan-400 focus:border-cyan-400 focus:outline-none transition-colors text-lg uppercase placeholder:text-slate-700 tracking-[0.2em] font-mono text-center relative z-0" 
-               placeholder="ENTER 6-DIGIT CORE" 
+               className="w-full bg-white/[0.03] border border-white/10 p-5 h-16 text-cyan-400 focus:border-cyan-400 focus:outline-none transition-all text-xl uppercase placeholder:text-slate-800 tracking-[0.4em] font-heading text-center font-black" 
+               placeholder="CORE_IDENTIFIER" 
             />
           </div>
 
-          <Button type="submit" disabled={loading} className="w-full rounded-none font-bold tracking-widest uppercase mt-6 relative z-10 bg-cyan-500 hover:bg-cyan-600 text-black shadow-[0_0_15px_rgba(34,211,238,0.3)] h-12">
-            {loading ? <Loader2 className="animate-spin w-5 h-5" /> : "TRANSMIT_REQUEST"}
+          <Button type="submit" disabled={loading} className="w-full rounded-none font-black tracking-[0.4em] uppercase h-14 relative z-10 bg-cyan-500 hover:bg-white text-black shadow-glow-cyan border-none group">
+            {loading ? <Loader2 className="animate-spin w-6 h-6" /> : (
+              <span className="flex items-center">
+                TRANSMIT_REQUEST <ArrowRight className="w-4 h-4 ml-4 group-hover:translate-x-2 transition-transform" />
+              </span>
+            )}
           </Button>
         </form>
       </DialogContent>

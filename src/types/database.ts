@@ -302,34 +302,81 @@ export type Database = {
         Row: {
           avatar_url: string | null
           created_at: string | null
+          current_streak: number
           email: string | null
           full_name: string | null
           id: string
+          last_active_date: string | null
+          longest_streak: number
           role: Database["public"]["Enums"]["user_role"] | null
+          streak_frozen_until: string | null
           student_id: string | null
           xp_total: number | null
         }
         Insert: {
           avatar_url?: string | null
           created_at?: string | null
+          current_streak?: number
           email?: string | null
           full_name?: string | null
           id: string
+          last_active_date?: string | null
+          longest_streak?: number
           role?: Database["public"]["Enums"]["user_role"] | null
+          streak_frozen_until?: string | null
           student_id?: string | null
           xp_total?: number | null
         }
         Update: {
           avatar_url?: string | null
           created_at?: string | null
+          current_streak?: number
           email?: string | null
           full_name?: string | null
           id?: string
+          last_active_date?: string | null
+          longest_streak?: number
           role?: Database["public"]["Enums"]["user_role"] | null
+          streak_frozen_until?: string | null
           student_id?: string | null
           xp_total?: number | null
         }
         Relationships: []
+      }
+      daily_activity: {
+        Row: {
+          activity_date: string
+          activity_type: string
+          created_at: string
+          id: string
+          student_id: string
+          xp_earned: number
+        }
+        Insert: {
+          activity_date?: string
+          activity_type: string
+          created_at?: string
+          id?: string
+          student_id: string
+          xp_earned?: number
+        }
+        Update: {
+          activity_date?: string
+          activity_type?: string
+          created_at?: string
+          id?: string
+          student_id?: string
+          xp_earned?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "daily_activity_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       quiz_attempts: {
         Row: {

@@ -213,9 +213,13 @@ export async function submitQuizAction(quizId: string, attemptId: string, studen
   // 6. Check badges
   const badgesAwarded = totalXP > 0 ? await checkAndAwardBadges(user.id) : []
 
+  // 7. Update daily streak
+  const { checkAndUpdateStreak } = await import('@/lib/streak')
+  const streakResult = await checkAndUpdateStreak(user.id, 'quiz', totalXP)
+
   revalidatePath(`/student/quizzes/${quizId}/result`)
   revalidatePath(`/student/leaderboard`)
-  return { success: true, earnedScore, maxScore, passed, isPerfect, xpGained: totalXP, oldXP, newXP, badgesAwarded }
+  return { success: true, earnedScore, maxScore, passed, isPerfect, xpGained: totalXP, oldXP, newXP, badgesAwarded, streak: streakResult }
   } catch (err: unknown) {
     console.error('[submitQuizAction]', err)
     return { error: `SYSTEM_ERROR: ${err instanceof Error ? err.message : 'Unknown error'}` }
