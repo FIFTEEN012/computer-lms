@@ -131,7 +131,6 @@ export async function checkAndUpdateStreak(
       })
 
       // Update xp_total on profile
-      await adminDb.rpc('', {}).catch(() => {})
       const { data: currentProfile } = await adminDb
         .from('profiles')
         .select('xp_total')
